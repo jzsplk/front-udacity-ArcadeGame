@@ -1,6 +1,7 @@
 //这里是我们游戏中的一些常数
 var WIDTH = 101,
-HEIGHT = 83;
+HEIGHT = 83,
+BASIC_SPEED = 100;
 
 
 // 这是我们的玩家要躲避的敌人 
@@ -9,8 +10,14 @@ var Enemy = function() {
     // 我们已经提供了一个来帮助你实现更多
     this.x = 3 * WIDTH;
     this.y = 2 * HEIGHT;
+    this.speed = BASIC_SPEED;
     // 敌人的图片或者雪碧图，用一个我们提供的工具函数来轻松的加载文件
     this.sprite = 'images/enemy-bug.png';
+};
+
+//控制移动的函数
+Enemy.prototype.move = function(dt) {
+    this.x += dt * this.speed; 
 };
 
 // 此为游戏必须的函数，用来更新敌人的位置
@@ -18,11 +25,15 @@ var Enemy = function() {
 Enemy.prototype.update = function(dt) {
     // 你应该给每一次的移动都乘以 dt 参数，以此来保证游戏在所有的电脑上
     // 都是以同样的速度运行的
+    this.move(dt);
+    if(this.x > 5 * WIDTH) {
+        this.x = - WIDTH;
+    }
 };
 
 // 此为游戏必须的函数，用来在屏幕上画出敌人，
 Enemy.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y, 60, 105);
 };
 
 // 现在实现你自己的玩家类
