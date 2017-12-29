@@ -50,13 +50,27 @@ var Player = function() {
 
 //让过河后的player复位
 Player.prototype.resetPlayer = function() {
-    if(this.y < HEIGHT) {
+    
         var resetPlayer = setTimeout(function() {
             player.y = 5 * HEIGHT;
             player.x = 2 * WIDTH;
         }, 500);
         
-    }
+};
+
+//处理碰撞时间的函数,判断是否碰撞，50为实验出的经验值
+function collision(item) {
+    return ( (item.y === player.y) && (Math.abs(item.x - player.x) < 50) );
+}
+
+//处理player与Enemy碰撞的han
+Player.prototype.checkCollisions = function(array) {
+    array.forEach(function(element) {
+        if(collision(element)) {
+            console.log('col');
+            player.resetPlayer();
+        }
+    });
 };
 
 // 此为游戏必须的函数，用来更新敌人的位置
@@ -64,7 +78,10 @@ Player.prototype.resetPlayer = function() {
 Player.prototype.update = function(dt) {
     // 你应该给每一次的移动都乘以 dt 参数，以此来保证游戏在所有的电脑上
     // 都是以同样的速度运行的
-    this.resetPlayer();
+    if(this.y < HEIGHT) {
+        this.resetPlayer();
+    };
+    this.checkCollisions(allEnemies);
     
 };
 
@@ -98,7 +115,11 @@ Player.prototype.handleInput = function(e) {
 // 把玩家对象放进一个叫 player 的变量里面
 var allEnemies = [];
 var e1 = new Enemy();
+var e2 = new Enemy();
+e2.y = 3 * HEIGHT;
+e2.x = 2 * WIDTH;
 allEnemies.push(e1);
+allEnemies.push(e2);
 var player = new Player();
 
 // 这段代码监听游戏玩家的键盘点击事件并且代表将按键的关键数字送到 Play.handleInput()
