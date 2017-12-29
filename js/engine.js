@@ -130,6 +130,8 @@ var Engine = (function(global) {
      */
     function reset() {
         // 空操作
+        
+    
     }
 
     /* 紧接着我们来加载我们知道的需要来绘制我们游戏关卡的图片。然后把 init 方法设置为回调函数。
