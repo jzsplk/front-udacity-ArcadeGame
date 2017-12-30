@@ -3,6 +3,14 @@ var WIDTH = 101,
 HEIGHT = 83,
 BASIC_SPEED = 100;
 
+//生成Enemy函数
+function addEnemy(num) {
+    for(var i = 0; i < num; i++) {
+        var enemy = new Enemy();
+        enemy.initProperty();
+        allEnemies.push(enemy);
+    }
+}
 
 // 这是我们的玩家要躲避的敌人 
 var Enemy = function() {
@@ -13,6 +21,12 @@ var Enemy = function() {
     this.speed = BASIC_SPEED;
     // 敌人的图片或者雪碧图，用一个我们提供的工具函数来轻松的加载文件
     this.sprite = 'images/enemy-bug.png';
+};
+
+Enemy.prototype.initProperty = function() {
+    this.x = -(Math.ceil(Math.random() * 3) * WIDTH);
+    this.y = (Math.ceil(Math.random() * 4)) * HEIGHT;
+    this.speed = BASIC_SPEED + (50 * Math.ceil(Math.random() * 3));
 };
 
 //控制移动的函数
@@ -27,13 +41,13 @@ Enemy.prototype.update = function(dt) {
     // 都是以同样的速度运行的
     this.move(dt);
     if(this.x > 5 * WIDTH) {
-        this.x = - WIDTH;
+        this.initProperty();
     }
 };
 
 // 此为游戏必须的函数，用来在屏幕上画出敌人，
 Enemy.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y, 60, 105);
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y + 15, 60, 105);
 };
 
 // 现在实现你自己的玩家类
@@ -63,7 +77,7 @@ function collision(item) {
     return ( (item.y === player.y) && (Math.abs(item.x - player.x) < 50) );
 }
 
-//处理player与Enemy碰撞的han
+//处理player与Enemy碰撞的函数
 Player.prototype.checkCollisions = function(array) {
     array.forEach(function(element) {
         if(collision(element)) {
@@ -87,7 +101,7 @@ Player.prototype.update = function(dt) {
 
 // 此为游戏必须的函数，用来在屏幕上画出敌人，
 Player.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y - 10);
 };
 
 //player 键盘控制函数
@@ -114,12 +128,7 @@ Player.prototype.handleInput = function(e) {
 // 把所有敌人的对象都放进一个叫 allEnemies 的数组里面
 // 把玩家对象放进一个叫 player 的变量里面
 var allEnemies = [];
-var e1 = new Enemy();
-var e2 = new Enemy();
-e2.y = 3 * HEIGHT;
-e2.x = 2 * WIDTH;
-allEnemies.push(e1);
-allEnemies.push(e2);
+addEnemy(5);
 var player = new Player();
 
 // 这段代码监听游戏玩家的键盘点击事件并且代表将按键的关键数字送到 Play.handleInput()
