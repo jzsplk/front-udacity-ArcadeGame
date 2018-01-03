@@ -19,6 +19,7 @@ var Enemy = function() {
     this.x = 3 * WIDTH;
     this.y = 2 * HEIGHT;
     this.speed = BASIC_SPEED;
+    this.damage = 4;
     // 敌人的图片或者雪碧图，用一个我们提供的工具函数来轻松的加载文件
     this.sprite = 'images/enemy-bug.png';
 };
@@ -58,6 +59,7 @@ var Player = function() {
     // 我们已经提供了一个来帮助你实现更多
     this.x = 3 * WIDTH;
     this.y = 5 * HEIGHT;
+    this.hp = 100;
     // 敌人的图片或者雪碧图，用一个我们提供的工具函数来轻松的加载文件
     this.sprite = 'images/char-boy.png';
 };
@@ -68,6 +70,7 @@ Player.prototype.resetPlayer = function() {
         var resetPlayer = setTimeout(function() {
             player.y = 5 * HEIGHT;
             player.x = 2 * WIDTH;
+            player.hp = 100;
         }, 500);
         
 };
@@ -81,8 +84,9 @@ function collision(item) {
 Player.prototype.checkCollisions = function(array) {
     array.forEach(function(element) {
         if(collision(element)) {
-            console.log('col');
-            player.resetPlayer();
+            player.hp -= element.damage;
+            console.log(player.hp);
+            // player.resetPlayer();
         }
     });
 };
@@ -93,10 +97,29 @@ Player.prototype.update = function(dt) {
     // 你应该给每一次的移动都乘以 dt 参数，以此来保证游戏在所有的电脑上
     // 都是以同样的速度运行的
     if(this.y < HEIGHT) {
+        this.y = 0;
         this.resetPlayer();
+    }
+    else if(this.y > 5 * HEIGHT) {
+        this.y = 5 * HEIGHT;
     };
+
     this.checkCollisions(allEnemies);
-    
+
+    if(this.hp < 0 ) {
+        alert("game over!");
+        player.resetPlayer();
+    }
+
+    $('.hp').html(player.hp);
+
+    if(this.x < 0) {
+        this.x = 0
+    }
+    else if(this.x > 4 * WIDTH) {
+        this.x = 4 * WIDTH;
+    };
+
 };
 
 // 此为游戏必须的函数，用来在屏幕上画出敌人，
