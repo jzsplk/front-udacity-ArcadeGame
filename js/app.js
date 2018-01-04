@@ -3,6 +3,8 @@ var WIDTH = 101,
 HEIGHT = 83,
 BASIC_SPEED = 100;
 
+var ScoreFlag = true;
+
 //生成Enemy函数
 function addEnemy(num) {
     for(var i = 0; i < num; i++) {
@@ -60,6 +62,7 @@ var Player = function() {
     this.x = 3 * WIDTH;
     this.y = 5 * HEIGHT;
     this.hp = 100;
+    this.score = 0;
     // 敌人的图片或者雪碧图，用一个我们提供的工具函数来轻松的加载文件
     this.sprite = 'images/char-boy.png';
 };
@@ -70,7 +73,8 @@ Player.prototype.resetPlayer = function() {
         var resetPlayer = setTimeout(function() {
             player.y = 5 * HEIGHT;
             player.x = 2 * WIDTH;
-            player.hp = 100;
+            ScoreFlag = true;
+            // player.hp = 100;
         }, 500);
         
 };
@@ -98,6 +102,10 @@ Player.prototype.update = function(dt) {
     // 都是以同样的速度运行的
     if(this.y < HEIGHT) {
         this.y = 0;
+        if(ScoreFlag === true) {
+            this.score += 100;
+            ScoreFlag = false;
+        }
         this.resetPlayer();
     }
     else if(this.y > 5 * HEIGHT) {
@@ -106,12 +114,15 @@ Player.prototype.update = function(dt) {
 
     this.checkCollisions(allEnemies);
 
-    if(this.hp < 0 ) {
+    if(this.hp <= 0 ) {
         alert("game over!");
+        this.score = 0;
         player.resetPlayer();
+        this.hp = 100;
     }
 
     $('.hp').html(player.hp);
+    $('.score').html(player.score);
 
     if(this.x < 0) {
         this.x = 0
