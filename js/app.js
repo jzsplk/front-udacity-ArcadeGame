@@ -23,21 +23,9 @@ var pavement = (function() {
     return matrix;
 })();
 
-//移除obstacle的函数
-var removeObstacle = function() {
-    if(allObstacles.length === 0) {
-        return;
-    }
 
-    var randomIndex = Math.floor(Math.random() * allObstacles.length);
 
-    //复原pavement中元素
-    var row = allObstacles[randomIndex].y / HEIGHT - 1;
-    var col = allObstacles[randomIndex].x / WIDTH;
-    pavement[row][col] = false;
 
-    allObstacles.splice(randomIndex ,1);
-};
 
 //生成Enemy函数
 function addEnemy(num) {
@@ -101,7 +89,7 @@ Entity.prototype.initPosition = function() {
     row = Math.floor(Math.random() * 4);
     this.x = WIDTH * col;
     this.y = HEIGHT * (row + 1);
-    //为了不让障碍物或宝物生成在同一地点
+    //为了不让障碍物或宝物生成在同一地点,不在玩家处产生宝物或障碍
     while(pavement[row][col] === true || (this.x === player.x && this.y === player.y) ) {
          col = Math.floor(Math.random() * 5);
          row = Math.floor(Math.random() * 4);
@@ -137,6 +125,26 @@ function addObstacle(num) {
     }
 }
 
+//移除obstacle的函数
+var removeObstacle = function() {
+    if(allObstacles.length === 0) {
+        return;
+    }
+
+    if(player.keynum <= 0) {
+        return;
+    }
+
+    var randomIndex = Math.floor(Math.random() * allObstacles.length);
+
+    //复原pavement中元素
+    var row = allObstacles[randomIndex].y / HEIGHT - 1;
+    var col = allObstacles[randomIndex].x / WIDTH;
+    pavement[row][col] = false;
+    player.keynum -= 1;
+    allObstacles.splice(randomIndex ,1);
+};
+
 //Treasure类为Entity的子类，当player碰到了treasure,treature消失并触发效果
 var Treasure = function() {
     Entity.call(this);
@@ -149,9 +157,34 @@ Treasure.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x + 20, this.y + 15, 60, 105);
 }
 
-//Treasure类的子类
+//Treasure类的子类，Key
+var Key = function() {
+    Treasure.call(this);
+    this.sprite = 'images/Key.png'
+}
 
+Key.prototype = Object.create(Treasure.prototype);
+Key.prototype.constructor=  Key;
 
+function addTreasure(num) {
+    for(var i = 0; i < num; i++) {
+        var treasure = new Key();
+        allTreasures.push(treasure);
+    }
+}
+
+//碰到Treasure的函数
+var hitTreasure = function() {
+    for (var i = 0; i < allTreasures.length; i++) {
+        if(player.x === allTreasures[i].x && player.y === allTreasures[i].y) {
+            var row = allTreasures[i].y / HEIGHT - 1;
+            var col = allTreasures[i].x / WIDTH;
+            pavement[row][col] = false;
+            allTreasures.splice(i, 1);
+            player.keynum += 1;
+        }
+    }
+};
 
 // 现在实现你自己的玩家类
 // 这个类需要一个 update() 函数， render() 函数和一个 handleInput()函数
@@ -162,6 +195,7 @@ var Player = function() {
     this.y = 5 * HEIGHT;
     this.hp = 100;
     this.score = 0;
+    this.keynum = 0;
     // player的图片或者雪碧图，用一个我们提供的工具函数来轻松的加载文件
     this.sprite = 'images/char-boy.png';
 };
@@ -226,9 +260,12 @@ Player.prototype.update = function(dt) {
         this.y = 0;
         if(ScoreFlag === true) {
             this.score += 100;
+            addTreasure(1);
+            addObstacle(1);
             ScoreFlag = false;
         }
         this.resetPlayer();
+
     }
     else if(this.y > 5 * HEIGHT) {
         this.y = 5 * HEIGHT;
@@ -249,6 +286,7 @@ Player.prototype.update = function(dt) {
     $('.hp').html(player.hp);
     $('.score').html(player.score);
     $('.highscore').html(HighScore);
+    $('.keynumber').html(player.keynum);
 
     //如果player走出x的屏幕范围，控制其在屏幕内
     if(this.x < 0) {
@@ -262,6 +300,9 @@ Player.prototype.update = function(dt) {
     if(HighScore < this.score) {
         HighScore = this.score;
     }
+
+    //监控player碰到Key的事件
+    hitTreasure();
 };
 
 // 此为游戏必须的函数，用来在屏幕上画出敌人，
@@ -309,9 +350,10 @@ Player.prototype.handleInput = function(e) {
 var player = new Player();
 var allEnemies = [];
 var allObstacles = [];
+var allTreasures = [];
 addObstacle(4);
 addEnemy(5);
-
+addTreasure(2);
 
 
 // 这段代码监听游戏玩家的键盘点击事件并且代表将按键的关键数字送到 Play.handleInput()
