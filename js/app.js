@@ -18,6 +18,16 @@ var pavement = (function() {
         }
     };
 
+    matrix.occupiedNumber = function() {
+        var num = 0;
+        this.forEach(function(eachRow) {
+            eachRow.forEach(function(eachCell) {
+                num += (eachCell ? 1: 0);
+            });
+        });
+        return num;
+    };
+
     matrix.reset();
 
     return matrix;
@@ -120,8 +130,12 @@ Obstacle.prototype.render = function() {
 //生成Obstacle函数
 function addObstacle(num) {
     for(var i = 0; i < num; i++) {
-        var obstacle = new Obstacle();
-        allObstacles.push(obstacle);
+        //控制添加石头，在被占据的格子超过10时不添加障碍
+        if(pavement.occupiedNumber() < 9) {
+            var obstacle = new Obstacle();
+            allObstacles.push(obstacle);
+        }
+        
     }
 }
 
@@ -157,6 +171,48 @@ Treasure.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x + 20, this.y + 15, 60, 105);
 }
 
+//添加宝物的函数
+function addTreasure(num) {
+    for(var i = 0; i < num; i++) {
+        var randomNum = Math.random();
+        if(randomNum < 0.6) {
+            var treasure = new Heart();
+        }
+        else {
+            var treasure = new Key();
+        }
+        
+        allTreasures.push(treasure);
+    }
+}
+
+//判断碰到宝物后应执行何动作的函数
+var hitAction = function(obj) {
+    if(obj instanceof Key) {
+        player.keynum += 1;
+    }
+    else if(obj instanceof Heart) {
+        if(player.hp < 70) {
+            player.hp += 30;
+        } else {
+            player.hp = 100;
+        }
+    }
+};
+
+//监测碰到Treasure并执行的函数
+var hitTreasure = function() {
+    for (var i = 0; i < allTreasures.length; i++) {
+        if(player.x === allTreasures[i].x && player.y === allTreasures[i].y) {
+            var row = allTreasures[i].y / HEIGHT - 1;
+            var col = allTreasures[i].x / WIDTH;
+            pavement[row][col] = false;
+            hitAction(allTreasures[i]);
+            allTreasures.splice(i, 1);
+            
+        }
+    }
+};
 //Treasure类的子类，Key
 var Key = function() {
     Treasure.call(this);
@@ -166,25 +222,14 @@ var Key = function() {
 Key.prototype = Object.create(Treasure.prototype);
 Key.prototype.constructor=  Key;
 
-function addTreasure(num) {
-    for(var i = 0; i < num; i++) {
-        var treasure = new Key();
-        allTreasures.push(treasure);
-    }
+//Treasure类的子类，Heart
+var Heart = function() {
+    Treasure.call(this);
+    this.sprite = 'images/Heart.png'
 }
 
-//碰到Treasure的函数
-var hitTreasure = function() {
-    for (var i = 0; i < allTreasures.length; i++) {
-        if(player.x === allTreasures[i].x && player.y === allTreasures[i].y) {
-            var row = allTreasures[i].y / HEIGHT - 1;
-            var col = allTreasures[i].x / WIDTH;
-            pavement[row][col] = false;
-            allTreasures.splice(i, 1);
-            player.keynum += 1;
-        }
-    }
-};
+Heart.prototype = Object.create(Treasure.prototype);
+Heart.prototype.constructor=  Heart;
 
 // 现在实现你自己的玩家类
 // 这个类需要一个 update() 函数， render() 函数和一个 handleInput()函数
@@ -220,6 +265,9 @@ function collision(item) {
     else if ( (item instanceof Obstacle) && ( (item.y === player.y) && (item.x === player.x) ) ) {
         return true;
     }
+    // else if ((item instanceof Key) &&  ( (item.y === player.y) && (item.x === player.x) ) ) {
+
+    // }
     else {
         return false;
     }
@@ -240,7 +288,8 @@ function checkCollisionsWithObstacle(array) {
 Player.prototype.checkCollisionsWithEnemy = function(array) {
     array.forEach(function(element) {
         if(collision(element)) {
-            player.hp -= element.damage;
+            player.x = element.x;
+            player.hp -= 4;
         }
     }); 
 };
@@ -261,7 +310,12 @@ Player.prototype.update = function(dt) {
         if(ScoreFlag === true) {
             this.score += 100;
             addTreasure(1);
-            addObstacle(1);
+            //以50%概率生成障碍
+            var randomProblity = Math.random();
+            if(randomProblity < 0.5) {
+                addObstacle(1);
+            }
+          
             ScoreFlag = false;
         }
         this.resetPlayer();
@@ -276,7 +330,7 @@ Player.prototype.update = function(dt) {
     
     //当player血量低于0，做如下行动
     if(this.hp <= 0 ) {
-        alert("game over!");
+        alert("game over! 得分为：" + player.score );
         this.score = 0;
         player.resetPlayer();
         this.hp = 100;
@@ -301,7 +355,7 @@ Player.prototype.update = function(dt) {
         HighScore = this.score;
     }
 
-    //监控player碰到Key的事件
+    //监控player碰到Treasure的事件
     hitTreasure();
 };
 
@@ -351,9 +405,15 @@ var player = new Player();
 var allEnemies = [];
 var allObstacles = [];
 var allTreasures = [];
-addObstacle(4);
-addEnemy(5);
-addTreasure(2);
+
+//初始化游戏函数
+var initGame = function () {
+    addObstacle(0);
+    addEnemy(5);
+    addTreasure(2);
+};
+
+initGame();
 
 
 // 这段代码监听游戏玩家的键盘点击事件并且代表将按键的关键数字送到 Play.handleInput()
