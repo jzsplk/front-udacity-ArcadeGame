@@ -149,14 +149,25 @@ var removeObstacle = function() {
         return;
     }
 
-    var randomIndex = Math.floor(Math.random() * allObstacles.length);
+    for(var i = 0; i < allObstacles.length; i++) {
+        if(player.x === allObstacles[i].x && (player.keynum > 0)) {
+            var row = allObstacles[i].y / HEIGHT - 1;
+            var col = allObstacles[i].x / WIDTH;
+            pavement[row][col] = false;
+            player.keynum -= 1;
+            allObstacles.splice(i ,1);
+        } 
+    }
+    
 
-    //复原pavement中元素
-    var row = allObstacles[randomIndex].y / HEIGHT - 1;
-    var col = allObstacles[randomIndex].x / WIDTH;
-    pavement[row][col] = false;
-    player.keynum -= 1;
-    allObstacles.splice(randomIndex ,1);
+    // var randomIndex = Math.floor(Math.random() * allObstacles.length);
+
+    // //复原pavement中元素
+    // var row = allObstacles[randomIndex].y / HEIGHT - 1;
+    // var col = allObstacles[randomIndex].x / WIDTH;
+    // pavement[row][col] = false;
+    // player.keynum -= 1;
+    // allObstacles.splice(randomIndex ,1);
 };
 
 //Treasure类为Entity的子类，当player碰到了treasure,treature消失并触发效果
@@ -172,14 +183,32 @@ Treasure.prototype.render = function() {
 }
 
 //添加宝物的函数
-function addTreasure(num) {
+function addRandomTreasure(num) {
+    var HeartWeight = 10,
+    KeyWeight = 10,
+    BlueGemWeight = 10,
+    GreenGemWeight = 10,
+    OrangeGemWeight = 10;
+
+    var TotalWeight = HeartWeight + KeyWeight + BlueGemWeight + GreenGemWeight + OrangeGemWeight;
+
+
     for(var i = 0; i < num; i++) {
-        var randomNum = Math.random();
-        if(randomNum < 0.6) {
+        var randomNum = Math.ceil(Math.random() * TotalWeight);
+        if(randomNum < HeartWeight ) {
             var treasure = new Heart();
         }
-        else {
+        else if(randomNum < (HeartWeight + KeyWeight)) {
             var treasure = new Key();
+        }
+        else if(randomNum  < (HeartWeight + KeyWeight + BlueGemWeight)) {
+            var treasure = new BlueGem();
+        }
+        else if(randomNum < (HeartWeight + KeyWeight + BlueGemWeight + GreenGemWeight)) {
+            var treasure = new GreenGem();
+        }
+        else{
+            var treasure = new OrangeGem();
         }
         
         allTreasures.push(treasure);
@@ -187,7 +216,7 @@ function addTreasure(num) {
 }
 
 //判断碰到宝物后应执行何动作的函数
-var hitAction = function(obj) {
+var hitTreasureAction = function(obj) {
     if(obj instanceof Key) {
         player.keynum += 1;
     }
@@ -198,6 +227,17 @@ var hitAction = function(obj) {
             player.hp = 100;
         }
     }
+    else if(obj instanceof BlueGem) {
+
+    }
+    else if(obj instanceof GreenGem) {
+        player.jump_distance = 2;
+    }
+    else if(obj instanceof OrangeGem) {
+        allEnemies.forEach(function(enemy) {
+            enemy.x = 6 * HEIGHT;
+        });
+    }
 };
 
 //监测碰到Treasure并执行的函数
@@ -207,7 +247,7 @@ var hitTreasure = function() {
             var row = allTreasures[i].y / HEIGHT - 1;
             var col = allTreasures[i].x / WIDTH;
             pavement[row][col] = false;
-            hitAction(allTreasures[i]);
+            hitTreasureAction(allTreasures[i]);
             allTreasures.splice(i, 1);
             
         }
@@ -220,7 +260,7 @@ var Key = function() {
 }
 
 Key.prototype = Object.create(Treasure.prototype);
-Key.prototype.constructor=  Key;
+Key.prototype.constructor = Key;
 
 //Treasure类的子类，Heart
 var Heart = function() {
@@ -229,7 +269,34 @@ var Heart = function() {
 }
 
 Heart.prototype = Object.create(Treasure.prototype);
-Heart.prototype.constructor=  Heart;
+Heart.prototype.constructor = Heart;
+
+//Treasure类的子类，BlueGem
+var BlueGem = function() {
+    Treasure.call(this);
+    this.sprite = 'images/Gem Blue.png'
+}
+
+BlueGem.prototype = Object.create(Treasure.prototype);
+BlueGem.prototype.constructor = BlueGem;
+
+//Treasure类的子类，GreenGem
+var GreenGem = function() {
+    Treasure.call(this);
+    this.sprite = 'images/Gem Green.png'
+}
+
+GreenGem.prototype = Object.create(Treasure.prototype);
+GreenGem.prototype.constructor = GreenGem;
+
+//Treasure类的子类，OrangeGem
+var OrangeGem = function() {
+    Treasure.call(this);
+    this.sprite = 'images/Gem Orange.png'
+}
+
+OrangeGem.prototype = Object.create(Treasure.prototype);
+OrangeGem.prototype.constructor = OrangeGem;
 
 // 现在实现你自己的玩家类
 // 这个类需要一个 update() 函数， render() 函数和一个 handleInput()函数
@@ -241,6 +308,8 @@ var Player = function() {
     this.hp = 100;
     this.score = 0;
     this.keynum = 0;
+    //跳跃的距离
+    this.jump_distance = 1;
     // player的图片或者雪碧图，用一个我们提供的工具函数来轻松的加载文件
     this.sprite = 'images/char-boy.png';
 };
@@ -251,6 +320,7 @@ Player.prototype.resetPlayer = function() {
         var resetPlayer = setTimeout(function() {
             player.y = 5 * HEIGHT;
             player.x = 2 * WIDTH;
+            player.jump_distance = 1;
             ScoreFlag = true;
             // player.hp = 100;
         }, 300);
@@ -289,7 +359,7 @@ Player.prototype.checkCollisionsWithEnemy = function(array) {
     array.forEach(function(element) {
         if(collision(element)) {
             player.x = element.x;
-            player.hp -= 4;
+            // player.hp -= 4;
         }
     }); 
 };
@@ -309,7 +379,7 @@ Player.prototype.update = function(dt) {
         this.y = 0;
         if(ScoreFlag === true) {
             this.score += 100;
-            addTreasure(1);
+            addRandomTreasure(1);
             //以50%概率生成障碍
             var randomProblity = Math.random();
             if(randomProblity < 0.5) {
@@ -372,16 +442,16 @@ Player.prototype.handleInput = function(e) {
 
     switch(e) {
         case 'left':
-            this.x -= WIDTH;
+            this.x -= player.jump_distance * WIDTH;
             break;
         case 'right':
-            this.x += WIDTH;
+            this.x += player.jump_distance * WIDTH;
             break;
         case 'up':
-            this.y -= HEIGHT;
+            this.y -= player.jump_distance * HEIGHT;
             break;
         case 'down':
-            this.y += HEIGHT;
+            this.y += player.jump_distance * HEIGHT;
             break;
         case 'space':
             removeObstacle();
@@ -410,7 +480,7 @@ var allTreasures = [];
 var initGame = function () {
     addObstacle(0);
     addEnemy(5);
-    addTreasure(2);
+    addRandomTreasure(2);
 };
 
 initGame();

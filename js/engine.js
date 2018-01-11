@@ -152,7 +152,10 @@ var Engine = (function(global) {
         'images/Rock.png',
         'images/Key.png',
         'images/Selector.png',
-        'images/Heart.png'
+        'images/Heart.png',
+        'images/Gem Blue.png',
+        'images/Gem Green.png',
+        'images/Gem Orange.png'
     ]);
     Resources.onReady(init);
 
