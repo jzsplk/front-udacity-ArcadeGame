@@ -4,6 +4,7 @@ HEIGHT = 83,
 BASIC_SPEED = 100,
 HighScore = 0;
 
+
 var ScoreFlag = true;
 var pavement = (function() {
     var matrix = [];
@@ -33,8 +34,35 @@ var pavement = (function() {
     return matrix;
 })();
 
+//启动倒计时，不断减少dt
+var timerId;
 
+var BlueGemAction = function() {
+    leftTime = 5000;
+    startTimer();
+}
 
+var leftTime = 0;
+
+var startTimer = function() {
+    Engine.setTimeSpeed(0.2);
+    var maxTime = 5000;
+    leftTime = Math.min(maxTime, leftTime);
+    var dt = 10;
+
+    //清除上一次的timer
+    clearInterval(timerId);
+
+    //倒计时器，leftTime减少到0时，触发恢复流速
+    timerId = setInterval(function() {
+        leftTime -= dt;
+        leftTime = Math.max(leftTime - dt, 0);
+        if(leftTime <= 0) {
+            Engine.setTimeSpeed(1);
+            clearInterval(timerId);
+        }
+    }, dt);
+};
 
 
 //生成Enemy函数
@@ -228,7 +256,7 @@ var hitTreasureAction = function(obj) {
         }
     }
     else if(obj instanceof BlueGem) {
-
+        BlueGemAction();
     }
     else if(obj instanceof GreenGem) {
         player.jump_distance = 2;
@@ -390,6 +418,7 @@ Player.prototype.update = function(dt) {
         }
         this.resetPlayer();
 
+
     }
     else if(this.y > 5 * HEIGHT) {
         this.y = 5 * HEIGHT;
@@ -455,6 +484,8 @@ Player.prototype.handleInput = function(e) {
             break;
         case 'space':
             removeObstacle();
+            // Engine.changeMap();
+            // Engine.setTimeSpeed(0.2);
             break;
         default:
             return;
