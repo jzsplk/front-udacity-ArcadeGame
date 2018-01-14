@@ -557,7 +557,7 @@ Player.prototype.handleInput = function(e) {
         return that;
     }
 
-var Coin = function() {
+var Tiger = function() {
     // Coin的默认属性，x,y,hp,score,sprite,width,height,ticksPerFrame
     this.x = 2 * WIDTH;
     this.y = 2 * HEIGHT;
@@ -578,7 +578,7 @@ var Coin = function() {
 };
 
 //处理player与Enemy碰撞的函数
-Coin.prototype.checkCollisionsWithEnemy = function(array) {
+Tiger.prototype.checkCollisionsWithEnemy = function(array) {
     array.forEach(function(element) {
         if(collision(element)) {
             player.x = element.x;
@@ -588,27 +588,27 @@ Coin.prototype.checkCollisionsWithEnemy = function(array) {
 };
 
 //处理player与Obstacle碰撞的函数，但是不起作用，清探究原因
-Coin.prototype.checkCollisionsWithObstacle = function(array) {
+Tiger.prototype.checkCollisionsWithObstacle = function(array) {
     array.forEach(function(element) {
         collision(element);       
     }); 
 };
 
 //定义速度跟位置的函数
-Coin.prototype.initProperty = function() {
+Tiger.prototype.initProperty = function() {
     this.x = -(Math.ceil(Math.random() * 3) * WIDTH);
     this.y = (Math.ceil(Math.random() * 4)) * HEIGHT;
-    this.speed = BASIC_SPEED + (50 * Math.ceil(Math.random() * 3));
+    this.speed = BASIC_SPEED + (10 * Math.ceil(Math.random() * 2));
 };
 
 //控制移动的函数
-Coin.prototype.move = function(dt) {
+Tiger.prototype.move = function(dt) {
     this.x += dt * this.speed; 
 };
 
 // 此为游戏必须的函数，用来更新敌人的位置
 // tickCount为控制动画的参数
-Coin.prototype.update = function(dt) {
+Tiger.prototype.update = function(dt) {
     this.tickCount += 1;
     // this.move(dt);
     // if(this.x > 5 * WIDTH) {
@@ -635,6 +635,84 @@ Coin.prototype.update = function(dt) {
 };
 
 // 此为游戏必须的函数，用来在屏幕上画出敌人，
+Tiger.prototype.render = function() {
+    // Clear the canvas
+          // ctx.clearRect(this.x, this.y, this.width, this.height);
+          
+          // Draw the animation
+          ctx.drawImage(
+            Resources.get(this.sprite),
+            this.frameIndex * this.width / this.numberOfFrames,
+            0,
+            this.width / this.numberOfFrames,
+            this.height,
+            this.x,
+            this.y + 40,
+            this.width / this.numberOfFrames,
+            this.height);
+        };
+
+//
+var Coin = function() {
+    // Coin的默认属性，x,y,hp,score,sprite,width,height,ticksPerFrame
+    this.x = 2 * WIDTH;
+    this.y = 2 * HEIGHT;
+    this.hp = 100;
+    this.score = 0;
+    this.keynum = 0;
+    this.height = 100;
+    this.width = 1000;
+    this.tickCount = 0;
+    this.ticksPerFrame = 4;
+    this.numberOfFrames = 10;
+    this.frameIndex = 0;
+    //跳跃的距离
+    // player的图片或者雪碧图，用一个我们提供的工具函数来轻松的加载文件
+    this.sprite = 'images/coin-sprite-animation.png';
+};
+
+//处理player与Enemy碰撞的函数
+Coin.prototype.checkCollisionsWithEnemy = function(array) {
+    array.forEach(function(element) {
+        if(collision(element)) {
+            player.x = element.x;
+            // player.hp -= 4;
+        }
+    }); 
+};
+
+//处理player与Obstacle碰撞的函数，但是不起作用，清探究原因
+Coin.prototype.checkCollisionsWithObstacle = function(array) {
+    array.forEach(function(element) {
+        collision(element);       
+    }); 
+};
+
+
+// 此为游戏必须的函数，用来更新敌人的位置
+// tickCount为控制动画的参数
+Coin.prototype.update = function(dt) {
+    this.tickCount += 1;
+    // this.move(dt);
+    // if(this.x > 5 * WIDTH) {
+    //     this.x = 0;
+    // }
+
+            if (this.tickCount > this.ticksPerFrame) {
+
+                this.tickCount = 0;
+                
+                // If the current frame index is in range
+                if (this.frameIndex < this.numberOfFrames - 1) {  
+                    // Go to the next frame
+                    this.frameIndex += 1;
+                } else {
+                    this.frameIndex = 0;
+                }
+            }
+};
+
+// 此为游戏必须的函数，用来在屏幕上画出敌人，
 Coin.prototype.render = function() {
     // Clear the canvas
           // ctx.clearRect(this.x, this.y, this.width, this.height);
@@ -654,12 +732,12 @@ Coin.prototype.render = function() {
 
 
 
-
 // 现在实例化你的所有对象
 // 把所有敌人的对象都放进一个叫 allEnemies 的数组里面
 // 把玩家对象放进一个叫 player 的变量里面
 var player = new Player();
 var coin = new Coin();
+var tiger = new Tiger();
 var allEnemies = [];
 var allObstacles = [];
 var allTreasures = [];
@@ -669,7 +747,7 @@ var initGame = function () {
     addObstacle(0);
     addEnemy(5);
     addRandomTreasure(2);
-    allEnemies.push(coin);
+    allEnemies.push(tiger);
 };
 
 initGame();
