@@ -29,6 +29,17 @@
 		"oF": 0,
 		"oS": 3
 		},
+	"\/images\/astronaut3.png": {
+		"ft": 32768,
+		"iS": 4782,
+		"oA": 0,
+		"oAP": "\/images\/astronaut3.png",
+		"oF": 0,
+		"oIPL": 0,
+		"opt": 0,
+		"oT": 1,
+		"q": 100
+		},
 	"\/images\/char-boy.png": {
 		"ft": 32768,
 		"iS": 7790,
@@ -84,11 +95,33 @@
 		"oT": 1,
 		"q": 100
 		},
+	"\/images\/coin-sprite-animation.png": {
+		"ft": 32768,
+		"iS": 54863,
+		"oA": 0,
+		"oAP": "\/images\/coin-sprite-animation.png",
+		"oF": 0,
+		"oIPL": 0,
+		"opt": 0,
+		"oT": 1,
+		"q": 100
+		},
 	"\/images\/enemy-bug.png": {
 		"ft": 32768,
 		"iS": 12635,
 		"oA": 0,
 		"oAP": "\/images\/enemy-bug.png",
+		"oF": 0,
+		"oIPL": 0,
+		"opt": 0,
+		"oT": 1,
+		"q": 100
+		},
+	"\/images\/flying-0.png": {
+		"ft": 32768,
+		"iS": 18906,
+		"oA": 0,
+		"oAP": "\/images\/flying-0.png",
 		"oF": 0,
 		"oIPL": 0,
 		"opt": 0,

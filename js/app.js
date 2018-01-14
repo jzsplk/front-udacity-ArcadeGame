@@ -103,6 +103,7 @@ Enemy.prototype.update = function(dt) {
     // 你应该给每一次的移动都乘以 dt 参数，以此来保证游戏在所有的电脑上
     // 都是以同样的速度运行的
     this.move(dt);
+    
     if(this.x > 5 * WIDTH) {
         this.initProperty();
     }
@@ -344,11 +345,15 @@ var Player = function() {
 
 //让过河后的player复位
 Player.prototype.resetPlayer = function() {
+
+        // var randomIndex = Math.floor(Math.random() * 3);
     
         var resetPlayer = setTimeout(function() {
             player.y = 5 * HEIGHT;
             player.x = 2 * WIDTH;
             player.jump_distance = 1;
+            //主题这里改变地图，地图还是会闪动
+            // Engine.changeMap(randomIndex);
             ScoreFlag = true;
             // player.hp = 100;
         }, 300);
@@ -484,7 +489,8 @@ Player.prototype.handleInput = function(e) {
             break;
         case 'space':
             removeObstacle();
-            // Engine.changeMap();
+            var randomIndex = Math.floor(Math.random() * 3);
+            Engine.changeMap(randomIndex);
             // Engine.setTimeSpeed(0.2);
             break;
         default:
@@ -498,11 +504,162 @@ Player.prototype.handleInput = function(e) {
      }
 };
 
+//实验动态的对象
+    function sprite (options) {
+    
+        var that = {},
+            frameIndex = 0,
+            tickCount = 0,
+            ticksPerFrame = options.ticksPerFrame || 0,
+            numberOfFrames = options.numberOfFrames || 1;
+        
+        that.context = options.context;
+        that.width = options.width;
+        that.height = options.height;
+        that.image = options.image;
+        
+        that.update = function () {
+
+            tickCount += 1;
+
+            if (tickCount > ticksPerFrame) {
+
+                tickCount = 0;
+                
+                // If the current frame index is in range
+                if (frameIndex < numberOfFrames - 1) {  
+                    // Go to the next frame
+                    frameIndex += 1;
+                } else {
+                    frameIndex = 0;
+                }
+            }
+        };
+        
+        that.render = function () {
+        
+          // Clear the canvas
+          that.context.clearRect(0, 0, that.width, that.height);
+          
+          // Draw the animation
+          that.context.drawImage(
+            that.image,
+            frameIndex * that.width / numberOfFrames,
+            0,
+            that.width / numberOfFrames,
+            that.height,
+            0,
+            0,
+            that.width / numberOfFrames,
+            that.height);
+        };
+        
+        return that;
+    }
+
+var Coin = function() {
+    // Coin的默认属性，x,y,hp,score,sprite,width,height,ticksPerFrame
+    this.x = 2 * WIDTH;
+    this.y = 2 * HEIGHT;
+    this.hp = 100;
+    this.score = 0;
+    this.keynum = 0;
+    this.height = 73;
+    this.width = 1000;
+    this.tickCount = 0;
+    this.ticksPerFrame = 4;
+    this.numberOfFrames = 8;
+    this.frameIndex = 0;
+    this.speed = BASIC_SPEED;
+    //跳跃的距离
+    this.jump_distance = 1;
+    // player的图片或者雪碧图，用一个我们提供的工具函数来轻松的加载文件
+    this.sprite = 'images/flying-0.png';
+};
+
+//处理player与Enemy碰撞的函数
+Coin.prototype.checkCollisionsWithEnemy = function(array) {
+    array.forEach(function(element) {
+        if(collision(element)) {
+            player.x = element.x;
+            // player.hp -= 4;
+        }
+    }); 
+};
+
+//处理player与Obstacle碰撞的函数，但是不起作用，清探究原因
+Coin.prototype.checkCollisionsWithObstacle = function(array) {
+    array.forEach(function(element) {
+        collision(element);       
+    }); 
+};
+
+//定义速度跟位置的函数
+Coin.prototype.initProperty = function() {
+    this.x = -(Math.ceil(Math.random() * 3) * WIDTH);
+    this.y = (Math.ceil(Math.random() * 4)) * HEIGHT;
+    this.speed = BASIC_SPEED + (50 * Math.ceil(Math.random() * 3));
+};
+
+//控制移动的函数
+Coin.prototype.move = function(dt) {
+    this.x += dt * this.speed; 
+};
+
+// 此为游戏必须的函数，用来更新敌人的位置
+// tickCount为控制动画的参数
+Coin.prototype.update = function(dt) {
+    this.tickCount += 1;
+    // this.move(dt);
+    // if(this.x > 5 * WIDTH) {
+    //     this.x = 0;
+    // }
+
+            if (this.tickCount > this.ticksPerFrame) {
+
+                this.tickCount = 0;
+                
+                // If the current frame index is in range
+                if (this.frameIndex < this.numberOfFrames - 1) {  
+                    // Go to the next frame
+                    this.frameIndex += 1;
+                } else {
+                    this.frameIndex = 0;
+                }
+            }
+    this.move(dt);
+    
+    if(this.x > 5 * WIDTH) {
+        this.initProperty();
+    }
+};
+
+// 此为游戏必须的函数，用来在屏幕上画出敌人，
+Coin.prototype.render = function() {
+    // Clear the canvas
+          // ctx.clearRect(this.x, this.y, this.width, this.height);
+          
+          // Draw the animation
+          ctx.drawImage(
+            Resources.get(this.sprite),
+            this.frameIndex * this.width / this.numberOfFrames,
+            0,
+            this.width / this.numberOfFrames,
+            this.height,
+            this.x,
+            this.y + 40,
+            this.width / this.numberOfFrames,
+            this.height);
+        };
+
+
+
 
 // 现在实例化你的所有对象
 // 把所有敌人的对象都放进一个叫 allEnemies 的数组里面
 // 把玩家对象放进一个叫 player 的变量里面
 var player = new Player();
+var coin = new Coin();
 var allEnemies = [];
 var allObstacles = [];
 var allTreasures = [];
@@ -512,6 +669,7 @@ var initGame = function () {
     addObstacle(0);
     addEnemy(5);
     addRandomTreasure(2);
+    allEnemies.push(coin);
 };
 
 initGame();

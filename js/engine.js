@@ -87,6 +87,7 @@ var Engine = (function(global) {
         });
 
         player.update();
+        // coin.update();
     }
 
     /* 这个函数做了一些游戏的初始渲染，然后调用 renderEntities 函数。记住，这个函数
@@ -105,7 +106,7 @@ var Engine = (function(global) {
                 'images/stone-block.png',   // 第一行草地
                 'images/grass-block.png'    // 第二行草地
             ],[
-                'images/stone-block.png',   // 这一行是河。
+                'images/grass-block.png',   // 这一行是河。
                 'images/water-block.png',   // 第一行石头
                 'images/water-block.png',   // 第二行石头
                 'images/water-block.png',   // 第三行石头
@@ -125,10 +126,11 @@ var Engine = (function(global) {
     /* 改变地图的函数*/
     var currentMap = maps[0];
 
-    function changeMap() {
-        var randomIndex = Math.floor(Math.random() * 3);
-        currentMap = maps[randomIndex];
-        return;
+    function changeMap(num) {
+        // var randomIndex = Math.floor(Math.random() * 3);
+        // index += 1;
+        currentMap = maps[num];
+        // return;
     }
 
     
@@ -172,6 +174,7 @@ var Engine = (function(global) {
             ob.render();
         });
         player.render();
+        coin.render();
     }
 
     /* 这个函数现在没干任何事，但是这会是一个好地方让你来处理游戏重置的逻辑。可能是一个
@@ -209,7 +212,11 @@ var Engine = (function(global) {
         'images/Heart.png',
         'images/Gem Blue.png',
         'images/Gem Green.png',
-        'images/Gem Orange.png'
+        'images/Gem Orange.png',
+        'images/char-cat-girl.png',
+        'images/coin-sprite-animation.png',
+        'images/astronaut3.png',
+        'images/flying-0.png'
     ]);
     Resources.onReady(init);
 
