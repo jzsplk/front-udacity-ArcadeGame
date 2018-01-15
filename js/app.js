@@ -4,8 +4,10 @@ HEIGHT = 83,
 BASIC_SPEED = 100,
 HighScore = 0;
 
-
+//为了控制触发次数
 var ScoreFlag = true;
+
+//记录哪些节点被占用
 var pavement = (function() {
     var matrix = [];
 
@@ -37,13 +39,14 @@ var pavement = (function() {
 //启动倒计时，不断减少dt
 var timerId;
 
+//蓝宝石被捡到时触发的函数
 var BlueGemAction = function() {
     leftTime = 5000;
     startTimer();
 }
-
+//倒计时的剩余时间
 var leftTime = 0;
-
+//倒计时函数
 var startTimer = function() {
     Engine.setTimeSpeed(0.2);
     var maxTime = 5000;
@@ -66,9 +69,9 @@ var startTimer = function() {
 
 
 //生成Enemy函数
-function addEnemy(num) {
+function addEnemy(name, num) {
     for(var i = 0; i < num; i++) {
-        var enemy = new Enemy();
+        var enemy = new name();
         enemy.initProperty();
         allEnemies.push(enemy);
     }
@@ -113,6 +116,75 @@ Enemy.prototype.update = function(dt) {
 Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y + 15, 60, 105);
 };
+
+//Tiger动态的Emeny
+var Tiger = function() {
+    // Tiger的默认属性，sprite,width,height,ticksPerFrame
+    this.height = 73;
+    this.width = 1000;
+    this.tickCount = 0;
+    this.ticksPerFrame = 4;
+    this.numberOfFrames = 8;
+    this.frameIndex = 0;
+    this.speed = BASIC_SPEED;
+    //跳跃的距离
+    this.jump_distance = 1;
+    // player的图片或者雪碧图，用一个我们提供的工具函数来轻松的加载文件
+    this.sprite = 'images/flying-0.png';
+};
+
+//定义速度跟位置的函数
+Tiger.prototype.initProperty = function() {
+    this.x = -(Math.ceil(Math.random() * 3) * WIDTH);
+    this.y = (Math.ceil(Math.random() * 4)) * HEIGHT;
+    this.speed = BASIC_SPEED + (10 * Math.ceil(Math.random() * 2));
+};
+
+//控制移动的函数
+Tiger.prototype.move = function(dt) {
+    this.x += dt * this.speed; 
+};
+
+// 此为游戏必须的函数，用来更新敌人的位置
+// tickCount为控制动画的参数
+Tiger.prototype.update = function(dt) {
+    this.tickCount += 1;
+
+            if (this.tickCount > this.ticksPerFrame) {
+
+                this.tickCount = 0;
+                
+                // If the current frame index is in range
+                if (this.frameIndex < this.numberOfFrames - 1) {  
+                    // Go to the next frame
+                    this.frameIndex += 1;
+                } else {
+                    this.frameIndex = 0;
+                }
+            }
+    this.move(dt);
+    
+    if(this.x > 5 * WIDTH) {
+        this.initProperty();
+    }
+};
+
+// 此为游戏必须的函数，用来在屏幕上画出敌人，
+Tiger.prototype.render = function() {
+
+    // Draw the animation
+    ctx.drawImage(
+    Resources.get(this.sprite),
+    this.frameIndex * this.width / this.numberOfFrames,
+    0,
+    this.width / this.numberOfFrames,
+    this.height,
+    this.x,
+    this.y + 40,
+    this.width / this.numberOfFrames,
+    this.height);
+};
+
 
 // Entity, 障碍跟宝物的父类
 var Entity = function() {
@@ -368,9 +440,9 @@ function collision(item) {
     else if ( (item instanceof Obstacle) && ( (item.y === player.y) && (item.x === player.x) ) ) {
         return true;
     }
-    // else if ((item instanceof Key) &&  ( (item.y === player.y) && (item.x === player.x) ) ) {
-
-    // }
+    else if ((item instanceof Tiger) &&  ( (item.y === player.y) && (Math.abs(item.x - player.x) < 50) ) ) {
+        return true;
+    }
     else {
         return false;
     }
@@ -390,9 +462,12 @@ function checkCollisionsWithObstacle(array) {
 //处理player与Enemy碰撞的函数
 Player.prototype.checkCollisionsWithEnemy = function(array) {
     array.forEach(function(element) {
-        if(collision(element)) {
+        if(collision(element) && element instanceof Tiger) {
             player.x = element.x;
-            // player.hp -= 4;
+            
+        }
+        else if(collision(element) && element instanceof Enemy) {
+            player.hp -= 4;
         }
     }); 
 };
@@ -504,199 +579,30 @@ Player.prototype.handleInput = function(e) {
      }
 };
 
-//实验动态的对象
-    function sprite (options) {
-    
-        var that = {},
-            frameIndex = 0,
-            tickCount = 0,
-            ticksPerFrame = options.ticksPerFrame || 0,
-            numberOfFrames = options.numberOfFrames || 1;
-        
-        that.context = options.context;
-        that.width = options.width;
-        that.height = options.height;
-        that.image = options.image;
-        
-        that.update = function () {
 
-            tickCount += 1;
 
-            if (tickCount > ticksPerFrame) {
+//具有动画效果的Treasure
 
-                tickCount = 0;
-                
-                // If the current frame index is in range
-                if (frameIndex < numberOfFrames - 1) {  
-                    // Go to the next frame
-                    frameIndex += 1;
-                } else {
-                    frameIndex = 0;
-                }
-            }
-        };
-        
-        that.render = function () {
-        
-          // Clear the canvas
-          that.context.clearRect(0, 0, that.width, that.height);
-          
-          // Draw the animation
-          that.context.drawImage(
-            that.image,
-            frameIndex * that.width / numberOfFrames,
-            0,
-            that.width / numberOfFrames,
-            that.height,
-            0,
-            0,
-            that.width / numberOfFrames,
-            that.height);
-        };
-        
-        return that;
-    }
-
-var Tiger = function() {
-    // Coin的默认属性，x,y,hp,score,sprite,width,height,ticksPerFrame
-    this.x = 2 * WIDTH;
-    this.y = 2 * HEIGHT;
-    this.hp = 100;
-    this.score = 0;
-    this.keynum = 0;
-    this.height = 73;
-    this.width = 1000;
-    this.tickCount = 0;
-    this.ticksPerFrame = 4;
-    this.numberOfFrames = 8;
-    this.frameIndex = 0;
-    this.speed = BASIC_SPEED;
-    //跳跃的距离
-    this.jump_distance = 1;
-    // player的图片或者雪碧图，用一个我们提供的工具函数来轻松的加载文件
-    this.sprite = 'images/flying-0.png';
-};
-
-//处理player与Enemy碰撞的函数
-Tiger.prototype.checkCollisionsWithEnemy = function(array) {
-    array.forEach(function(element) {
-        if(collision(element)) {
-            player.x = element.x;
-            // player.hp -= 4;
-        }
-    }); 
-};
-
-//处理player与Obstacle碰撞的函数，但是不起作用，清探究原因
-Tiger.prototype.checkCollisionsWithObstacle = function(array) {
-    array.forEach(function(element) {
-        collision(element);       
-    }); 
-};
-
-//定义速度跟位置的函数
-Tiger.prototype.initProperty = function() {
-    this.x = -(Math.ceil(Math.random() * 3) * WIDTH);
-    this.y = (Math.ceil(Math.random() * 4)) * HEIGHT;
-    this.speed = BASIC_SPEED + (10 * Math.ceil(Math.random() * 2));
-};
-
-//控制移动的函数
-Tiger.prototype.move = function(dt) {
-    this.x += dt * this.speed; 
-};
-
-// 此为游戏必须的函数，用来更新敌人的位置
-// tickCount为控制动画的参数
-Tiger.prototype.update = function(dt) {
-    this.tickCount += 1;
-    // this.move(dt);
-    // if(this.x > 5 * WIDTH) {
-    //     this.x = 0;
-    // }
-
-            if (this.tickCount > this.ticksPerFrame) {
-
-                this.tickCount = 0;
-                
-                // If the current frame index is in range
-                if (this.frameIndex < this.numberOfFrames - 1) {  
-                    // Go to the next frame
-                    this.frameIndex += 1;
-                } else {
-                    this.frameIndex = 0;
-                }
-            }
-    this.move(dt);
-    
-    if(this.x > 5 * WIDTH) {
-        this.initProperty();
-    }
-};
-
-// 此为游戏必须的函数，用来在屏幕上画出敌人，
-Tiger.prototype.render = function() {
-    // Clear the canvas
-          // ctx.clearRect(this.x, this.y, this.width, this.height);
-          
-          // Draw the animation
-          ctx.drawImage(
-            Resources.get(this.sprite),
-            this.frameIndex * this.width / this.numberOfFrames,
-            0,
-            this.width / this.numberOfFrames,
-            this.height,
-            this.x,
-            this.y + 40,
-            this.width / this.numberOfFrames,
-            this.height);
-        };
-
-//
+//Treasure类的子类，Coin
 var Coin = function() {
-    // Coin的默认属性，x,y,hp,score,sprite,width,height,ticksPerFrame
-    this.x = 2 * WIDTH;
-    this.y = 2 * HEIGHT;
-    this.hp = 100;
-    this.score = 0;
-    this.keynum = 0;
+    Treasure.call(this);
     this.height = 100;
     this.width = 1000;
     this.tickCount = 0;
     this.ticksPerFrame = 4;
     this.numberOfFrames = 10;
     this.frameIndex = 0;
-    //跳跃的距离
-    // player的图片或者雪碧图，用一个我们提供的工具函数来轻松的加载文件
+    //可以动态的sprite sheet图片
     this.sprite = 'images/coin-sprite-animation.png';
-};
+}
 
-//处理player与Enemy碰撞的函数
-Coin.prototype.checkCollisionsWithEnemy = function(array) {
-    array.forEach(function(element) {
-        if(collision(element)) {
-            player.x = element.x;
-            // player.hp -= 4;
-        }
-    }); 
-};
-
-//处理player与Obstacle碰撞的函数，但是不起作用，清探究原因
-Coin.prototype.checkCollisionsWithObstacle = function(array) {
-    array.forEach(function(element) {
-        collision(element);       
-    }); 
-};
-
+Coin.prototype = Object.create(Treasure.prototype);
+Coin.prototype.constructor = Coin;
 
 // 此为游戏必须的函数，用来更新敌人的位置
 // tickCount为控制动画的参数
 Coin.prototype.update = function(dt) {
     this.tickCount += 1;
-    // this.move(dt);
-    // if(this.x > 5 * WIDTH) {
-    //     this.x = 0;
-    // }
 
             if (this.tickCount > this.ticksPerFrame) {
 
@@ -726,8 +632,8 @@ Coin.prototype.render = function() {
             this.height,
             this.x,
             this.y + 40,
-            this.width / this.numberOfFrames,
-            this.height);
+            this.width / this.numberOfFrames -20,
+            this.height -20);
         };
 
 
@@ -737,7 +643,6 @@ Coin.prototype.render = function() {
 // 把玩家对象放进一个叫 player 的变量里面
 var player = new Player();
 var coin = new Coin();
-var tiger = new Tiger();
 var allEnemies = [];
 var allObstacles = [];
 var allTreasures = [];
@@ -745,9 +650,9 @@ var allTreasures = [];
 //初始化游戏函数
 var initGame = function () {
     addObstacle(0);
-    addEnemy(5);
+    addEnemy(Enemy, 5);
+    addEnemy(Tiger, 1);
     addRandomTreasure(2);
-    allEnemies.push(tiger);
 };
 
 initGame();
