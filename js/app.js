@@ -283,15 +283,20 @@ Treasure.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x + 20, this.y + 15, 60, 105);
 }
 
+Treasure.prototype.update = function(dt) {
+    
+};
+
 //添加宝物的函数
 function addRandomTreasure(num) {
     var HeartWeight = 10,
     KeyWeight = 10,
     BlueGemWeight = 10,
     GreenGemWeight = 10,
-    OrangeGemWeight = 10;
+    OrangeGemWeight = 10,
+    CoinWeight = 10;
 
-    var TotalWeight = HeartWeight + KeyWeight + BlueGemWeight + GreenGemWeight + OrangeGemWeight;
+    var TotalWeight = HeartWeight + KeyWeight + BlueGemWeight + GreenGemWeight + OrangeGemWeight + CoinWeight;
 
 
     for(var i = 0; i < num; i++) {
@@ -307,6 +312,9 @@ function addRandomTreasure(num) {
         }
         else if(randomNum < (HeartWeight + KeyWeight + BlueGemWeight + GreenGemWeight)) {
             var treasure = new GreenGem();
+        }
+        else if(randomNum < (HeartWeight + KeyWeight + BlueGemWeight + GreenGemWeight + CoinWeight)) {
+            var treasure = new Coin();
         }
         else{
             var treasure = new OrangeGem();
@@ -333,6 +341,9 @@ var hitTreasureAction = function(obj) {
     }
     else if(obj instanceof GreenGem) {
         player.jump_distance = 2;
+    }
+    else if(obj instanceof Coin) {
+        player.score += 1000;
     }
     else if(obj instanceof OrangeGem) {
         allEnemies.forEach(function(enemy) {
@@ -399,6 +410,58 @@ var OrangeGem = function() {
 OrangeGem.prototype = Object.create(Treasure.prototype);
 OrangeGem.prototype.constructor = OrangeGem;
 
+//具有动画效果的Treasure
+//Treasure类的子类，Coin
+var Coin = function() {
+    Treasure.call(this);
+    this.height = 100;
+    this.width = 1000;
+    this.tickCount = 0;
+    this.ticksPerFrame = 4;
+    this.numberOfFrames = 10;
+    this.frameIndex = 0;
+    //可以动态的sprite sheet图片
+    this.sprite = 'images/coin-sprite-animation.png';
+}
+
+Coin.prototype = Object.create(Treasure.prototype);
+Coin.prototype.constructor = Coin;
+
+// 此为游戏必须的函数，用来更新使得annimation可以出现
+// tickCount为控制动画的参数
+Coin.prototype.update = function(dt) {
+    this.tickCount += 1;
+
+            if (this.tickCount > this.ticksPerFrame) {
+
+                this.tickCount = 0;
+                
+                // If the current frame index is in range
+                if (this.frameIndex < this.numberOfFrames - 1) {  
+                    // Go to the next frame
+                    this.frameIndex += 1;
+                } else {
+                    this.frameIndex = 0;
+                }
+            }
+};
+
+// 此为游戏必须的函数，用来在屏幕上画出敌人，
+Coin.prototype.render = function() {
+
+    // Draw the animation
+    ctx.drawImage(
+    Resources.get(this.sprite),
+    this.frameIndex * this.width / this.numberOfFrames,
+    0,
+    this.width / this.numberOfFrames,
+    this.height,
+    this.x,
+    this.y + 40,
+    this.width / this.numberOfFrames -20,
+    this.height -20);
+};
+
 // 现在实现你自己的玩家类
 // 这个类需要一个 update() 函数， render() 函数和一个 handleInput()函数
 // 这是我们的玩家
@@ -440,7 +503,7 @@ function collision(item) {
     else if ( (item instanceof Obstacle) && ( (item.y === player.y) && (item.x === player.x) ) ) {
         return true;
     }
-    else if ((item instanceof Tiger) &&  ( (item.y === player.y) && (Math.abs(item.x - player.x) < 50) ) ) {
+    else if ((item instanceof Tiger) &&  ( (item.y === player.y) && (Math.abs(item.x - player.x) < 80) ) ) {
         return true;
     }
     else {
@@ -581,60 +644,7 @@ Player.prototype.handleInput = function(e) {
 
 
 
-//具有动画效果的Treasure
 
-//Treasure类的子类，Coin
-var Coin = function() {
-    Treasure.call(this);
-    this.height = 100;
-    this.width = 1000;
-    this.tickCount = 0;
-    this.ticksPerFrame = 4;
-    this.numberOfFrames = 10;
-    this.frameIndex = 0;
-    //可以动态的sprite sheet图片
-    this.sprite = 'images/coin-sprite-animation.png';
-}
-
-Coin.prototype = Object.create(Treasure.prototype);
-Coin.prototype.constructor = Coin;
-
-// 此为游戏必须的函数，用来更新敌人的位置
-// tickCount为控制动画的参数
-Coin.prototype.update = function(dt) {
-    this.tickCount += 1;
-
-            if (this.tickCount > this.ticksPerFrame) {
-
-                this.tickCount = 0;
-                
-                // If the current frame index is in range
-                if (this.frameIndex < this.numberOfFrames - 1) {  
-                    // Go to the next frame
-                    this.frameIndex += 1;
-                } else {
-                    this.frameIndex = 0;
-                }
-            }
-};
-
-// 此为游戏必须的函数，用来在屏幕上画出敌人，
-Coin.prototype.render = function() {
-    // Clear the canvas
-          // ctx.clearRect(this.x, this.y, this.width, this.height);
-          
-          // Draw the animation
-          ctx.drawImage(
-            Resources.get(this.sprite),
-            this.frameIndex * this.width / this.numberOfFrames,
-            0,
-            this.width / this.numberOfFrames,
-            this.height,
-            this.x,
-            this.y + 40,
-            this.width / this.numberOfFrames -20,
-            this.height -20);
-        };
 
 
 
@@ -642,7 +652,6 @@ Coin.prototype.render = function() {
 // 把所有敌人的对象都放进一个叫 allEnemies 的数组里面
 // 把玩家对象放进一个叫 player 的变量里面
 var player = new Player();
-var coin = new Coin();
 var allEnemies = [];
 var allObstacles = [];
 var allTreasures = [];
