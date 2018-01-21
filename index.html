@@ -4,17 +4,38 @@
     <meta charset="UTF-8">
     <title>Effective JavaScript: Frogger</title>
     <link rel="stylesheet" href="css/style.css">
+    <script src="App42-all-3.0.min.js"></script>
+
 </head>
 <body>
 	<main>
-		<h2>HP: <span class="hp"></span> | </h2>
-        <h2> 分数: <span class="score"></span> | </h2>
-        <h2> 本地记录: <span class="highscore"></span></h2>
-        <h2> 钥匙数量: <span class="keynumber"></span> （空格去石头）</h2>
+        <header class="header">
+            <p class="health">HP: <span class="hp"></span> </p>
+
+            <p class="key"> 钥匙数量: <span class="keynumber"></span>（空格去石头）</p>           
+            <p class="record"> 本地记录: <span class="highscore"></span></p>
+            
+        </header>
+
+        <div>
+            <ul class="userinfo">
+                <li class="user"><span class="name" >尊号</span> <span class="score"> </span></li>
+            </ul>
+        </div>
+		
+        <div class="board-content">
+            <ul class="leaderboard"></ul>
+        </div>
 	</main>
     <script src="js/resources.js"></script>
     <script src="js/app.js"></script>
     <script src="js/engine.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/base64.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js"></script>
+    <script>
+    
+    </script>
+      
 </body>
 </html>

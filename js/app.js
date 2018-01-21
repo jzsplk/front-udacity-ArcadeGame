@@ -472,6 +472,7 @@ var Player = function() {
     this.hp = 100;
     this.score = 0;
     this.keynum = 0;
+    // this.name = win.prompt('Please enter your name', 'xc');
     //跳跃的距离
     this.jump_distance = 1;
     // player的图片或者雪碧图，用一个我们提供的工具函数来轻松的加载文件
@@ -572,10 +573,13 @@ Player.prototype.update = function(dt) {
     
     //当player血量低于0，做如下行动
     if(this.hp <= 0 ) {
-        alert("game over! 得分为：" + player.score );
-        this.score = 0;
-        player.resetPlayer();
-        this.hp = 100;
+        alert(Data.userName + " game over! 得分为：" + player.score );
+        //把用户的名字跟分数进行存储，使用Data中的函数
+        Data.saveUserScore(Data.userName, player.score);
+        initGame();
+        var getName = setTimeout(function() {
+            changeName();
+        }, 500);
     }
 
     //在屏幕显示分数及血量
@@ -583,6 +587,7 @@ Player.prototype.update = function(dt) {
     $('.score').html(player.score);
     $('.highscore').html(HighScore);
     $('.keynumber').html(player.keynum);
+    $('.name').html(Data.userName);
 
     //如果player走出x的屏幕范围，控制其在屏幕内
     if(this.x < 0) {
@@ -615,6 +620,7 @@ Player.prototype.handleInput = function(e) {
     switch(e) {
         case 'left':
             this.x -= player.jump_distance * WIDTH;
+            console.log(Data.userName);
             break;
         case 'right':
             this.x += player.jump_distance * WIDTH;
@@ -656,15 +662,48 @@ var allEnemies = [];
 var allObstacles = [];
 var allTreasures = [];
 
+
+
+
+//用来获取并改变用户名的函数
+var changeName = function() {
+    Data.userName = Data.win.prompt('请输入您的尊号', '太乙真人');
+};
+
+//用来刷新排行榜函数
+var updateRanking = function() {
+
+};
+
 //初始化游戏函数
 var initGame = function () {
+    player.score = 0;
+    player.resetPlayer();
+    player.hp = 100;
+    player.keynum = 0;
+    allEnemies=[];
+    allObstacles = [];
+    allTreasures = [];
+    pavement.reset();
     addObstacle(0);
     addEnemy(Enemy, 5);
     addEnemy(Tiger, 1);
     addRandomTreasure(2);
 };
 
+
 initGame();
+
+
+//scoreboard
+
+
+// //
+
+
+// var max = 10,  offset = 0 ,  result ;     
+// var scoreBoardService  = new App42ScoreBoard();   
+// gameService.getAllGamesWithPaging(max,offset,{    success: function(object) {    var game = JSON.parse(object);    result = game.app42.response.games.game;  console.log("result is " + result)  },    error: function(error) {    }    });     
 
 
 // 这段代码监听游戏玩家的键盘点击事件并且代表将按键的关键数字送到 Play.handleInput()
