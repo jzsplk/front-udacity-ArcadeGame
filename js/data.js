@@ -45,9 +45,7 @@ var Data = (function(global) {
     //         }); 
     //
 
-    //no-English solution Base64 trasform
-    
-
+    //由于API原因必须先用Base64转码之后再存储，并在取出后解码，no-English solution Base64 trasform
     function utf16to8(str) {
       var out, i, len, c;
 
@@ -213,7 +211,7 @@ function base64decode(str) {
     };
 
     //初始化取得名字
-    getName();
+    // getName();
     console.log(userName);
     //save user score
     var gameName = "frogger",  result ;    
@@ -316,7 +314,10 @@ function base64decode(str) {
 
     getTopNRanking(100);
     
-
+    //change name function
+    // var changeName = function() {
+    //     userName = win.prompt('请输入您的尊号', '太乙真人');
+    // };
 
 
     return {
@@ -325,5 +326,7 @@ function base64decode(str) {
         getName: getName,
         win: win,
         getTopNRanking: getTopNRanking
+       
+
     };
 })(this);

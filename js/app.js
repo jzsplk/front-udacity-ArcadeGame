@@ -6,6 +6,7 @@ HighScore = 0;
 
 //为了控制触发次数
 var ScoreFlag = true;
+var endFlag = true;
 
 //记录哪些节点被占用
 var pavement = (function() {
@@ -44,6 +45,7 @@ var BlueGemAction = function() {
     leftTime = 5000;
     startTimer();
 }
+
 //倒计时的剩余时间
 var leftTime = 0;
 //倒计时函数
@@ -347,7 +349,7 @@ var hitTreasureAction = function(obj) {
     }
     else if(obj instanceof OrangeGem) {
         allEnemies.forEach(function(enemy) {
-            enemy.x = 6 * HEIGHT;
+            enemy.x = - 6 * WIDTH;
         });
     }
 };
@@ -491,6 +493,7 @@ Player.prototype.resetPlayer = function() {
             //主题这里改变地图，地图还是会闪动
             // Engine.changeMap(randomIndex);
             ScoreFlag = true;
+            endFlag = true;
             // player.hp = 100;
         }, 300);
         
@@ -573,13 +576,16 @@ Player.prototype.update = function(dt) {
     
     //当player血量低于0，做如下行动
     if(this.hp <= 0 ) {
-        alert(Data.userName + " game over! 得分为：" + player.score );
+        if(endFlag === true) {
+            endGame();
+            endFlag = false;
+        }
+        
         //把用户的名字跟分数进行存储，使用Data中的函数
-        Data.saveUserScore(Data.userName, player.score);
-        initGame();
-        var getName = setTimeout(function() {
-            changeName();
-        }, 500);
+        // Data.saveUserScore(Data.userName, player.score);
+        // var getName = setTimeout(function() {
+        //     Data.changeName();
+        // }, 500);
     }
 
     //在屏幕显示分数及血量
@@ -667,16 +673,13 @@ var allTreasures = [];
 
 //用来获取并改变用户名的函数
 var changeName = function() {
-    Data.userName = Data.win.prompt('请输入您的尊号', '太乙真人');
+    Data.userName = Data.win.prompt('请输入您的尊号', '太乙真人') || 'no-name';
 };
 
-//用来刷新排行榜函数
-var updateRanking = function() {
-
-};
 
 //初始化游戏函数
 var initGame = function () {
+    changeName();
     player.score = 0;
     player.resetPlayer();
     player.hp = 100;
@@ -691,8 +694,24 @@ var initGame = function () {
     addRandomTreasure(2);
 };
 
+initGame(); 
 
-initGame();
+//end Game function
+function endGame() {
+    swal({
+            position: 'left',
+            type: 'success',
+            title: 'Happy Birthday 大头！！',
+            text: '得到 ' + player.score + ' 分,' + '排名' + player.score + '名， ' + ' Winner Winner Chicken Dinner!',
+            confirmButtonColor: '#9bcb3c',
+            confirmButtonText: '再来一局',
+    }).then(function(isConfirm) {
+        if(isConfirm) {
+            Data.saveUserScore(Data.userName, player.score);
+            initGame();
+        }
+    });
+}
 
 
 //scoreboard

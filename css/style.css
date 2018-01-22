@@ -1,9 +1,16 @@
 * {
+  margin: 0;
+  padding: 0;
   list-style: none;
 }
 
 body {
     text-align: center;
+    font: sans-serif;
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    user-select:none;
 }
 
 main {
@@ -26,31 +33,30 @@ main {
   box-shadow: 0 7px 30px rgba(62, 9, 11, .3);
 }*/
 
+
+/*header 部分的sytle*/
 .header {
-    position: absolute;
-    top: 0;
-    left: 0; 
-  	float: right;
+    position: relative;
   	height: 50px;
-    width: 100%;
+    width: 505px;
     line-height: 50px;
     background: linear-gradient(to bottom, #3a404d, #181c26);
-    margin: 0;
-    padding: 0;
+    margin: 0 auto;
 }
 
-.header p {
-  float: left;
+/* header中的文字*/
+.txt {
   display: inline-block;
   position: relative;
   height: 30px;
   line-height: 30px;
   overflow: hidden;
-  font-size: 1px;
+  font-size: 0.8rem;
   color:#FFF;
   font-weight:bold;
-  margin-right: 40px;
+  margin-right: 5px;
   margin-left:40px;
+  text-shadow: 1px 1px #000;
 }
 
 .header span {
@@ -65,7 +71,7 @@ main {
   	text-align: left;
   	display: inline-block;
   	height: 360px;
-  	min-width: 350px;
+  	min-width: 320px;
   	margin:0;
     padding:0;
     background: linear-gradient(to bottom, #3a404d, #181c26);
@@ -90,6 +96,7 @@ main {
     float:right;
     color:#F00;
     font-weight:bold;
+    margin-left: 10px;
 }
 
 .userinfo {
@@ -98,13 +105,13 @@ main {
     top:50px;
     text-align: left;
     display: inline-block;
-    width: 350px;
-    margin:0;
-    padding:0;
+    min-width: 320px;
     background: linear-gradient(to bottom, #3a404d, #181c26);
     border:5px solid #CCC;
     border-radius: 10px;
     box-shadow: 0 7px 30px rgba(62, 9, 11, .3);
+    height: 40px;
+    line-height: 40px;
 }
 
 .user {
@@ -112,7 +119,6 @@ main {
     color:#FFF;
     font-family: helvetica;
     padding:2% 5%;
-    border-bottom: 1px solid #555;
 }
 
 .userinfo .score {
@@ -121,3 +127,49 @@ main {
     color:#008000;
     font-weight:bold;
 }
+
+/*menuButton*/
+.btn-menu {
+  display: inline-block;
+  right: 0;
+  width: 55px;
+  height: 50px;
+  margin: 0;
+  padding: 8px;
+  border: none;
+  border-radius: 0;
+  background-color: #181818;
+}
+
+.btn-toggle:hover {
+  background-color: #104008;
+}
+
+.line {
+  margin: 6px;
+  border-bottom: 3px solid white;
+  box-shadow: 3px 3px #000;
+}
+
+/* for menu */
+.menu-list {
+  position: absolute;
+  right: 0px;
+  top:60px;
+  width: 120px;
+  height: 0;
+  margin-top: -1px;
+  background-color: #000;
+  overflow: hidden;
+  transition: 0.2s;
+}
+
+.btn-option {
+  position: relative;
+  height: 60px;
+  border: 2px solid #251;
+  border-bottom: none;
+  text-shadow: 1px 1px #000;
+  color: white;
+}
+
