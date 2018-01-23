@@ -7,6 +7,7 @@ HighScore = 0;
 //为了控制触发次数
 var ScoreFlag = true;
 var endFlag = true;
+var backgroundFlag = true;
 
 //记录哪些节点被占用
 var pavement = (function() {
@@ -48,6 +49,7 @@ var BlueGemAction = function() {
 
 //倒计时的剩余时间
 var leftTime = 0;
+
 //倒计时函数
 var startTimer = function() {
     Engine.setTimeSpeed(0.2);
@@ -94,7 +96,7 @@ var Enemy = function() {
 Enemy.prototype.initProperty = function() {
     this.x = -(Math.ceil(Math.random() * 3) * WIDTH);
     this.y = (Math.ceil(Math.random() * 4)) * HEIGHT;
-    this.speed = BASIC_SPEED + (50 * Math.ceil(Math.random() * 3));
+    this.speed = BASIC_SPEED * 0.01 + (50 * Math.ceil(Math.random() * 3));
 };
 
 //控制移动的函数
@@ -129,8 +131,6 @@ var Tiger = function() {
     this.numberOfFrames = 8;
     this.frameIndex = 0;
     this.speed = BASIC_SPEED;
-    //跳跃的距离
-    this.jump_distance = 1;
     // player的图片或者雪碧图，用一个我们提供的工具函数来轻松的加载文件
     this.sprite = 'images/flying-0.png';
 };
@@ -472,7 +472,7 @@ var Player = function() {
     this.x = 3 * WIDTH;
     this.y = 5 * HEIGHT;
     this.hp = 100;
-    this.score = 0;
+    this.score = 1;
     this.keynum = 0;
     // this.name = win.prompt('Please enter your name', 'xc');
     //跳跃的距离
@@ -499,7 +499,7 @@ Player.prototype.resetPlayer = function() {
         
 };
 
-//处理碰撞的函数,判断是否碰撞，50为实验出的经验值
+//处理与Enemy或Obstable碰撞的函数,判断是否碰撞，50，80为实验出的经验值
 function collision(item) {
     if( (item instanceof Enemy) && ( (item.y === player.y) && (Math.abs(item.x - player.x) < 50) )) {
         return true;
@@ -513,8 +513,6 @@ function collision(item) {
     else {
         return false;
     }
-
-    
 }
 
 //处理player与Obstacle碰撞的函数
@@ -532,6 +530,14 @@ Player.prototype.checkCollisionsWithEnemy = function(array) {
         if(collision(element) && element instanceof Tiger) {
             player.x = element.x;
             
+            if((player.x > 4 * WIDTH) & backgroundFlag) {
+
+                var randomIndex = Math.floor(Math.random() * 3);
+                Engine.changeMap(randomIndex);
+                runWithTiger();
+                console.log('到底了');
+                backgroundFlag = false;
+            }
         }
         else if(collision(element) && element instanceof Enemy) {
             player.hp -= 4;
@@ -562,6 +568,7 @@ Player.prototype.update = function(dt) {
             }
           
             ScoreFlag = false;
+            backgroundFlag = true;
         }
         this.resetPlayer();
 
@@ -580,12 +587,6 @@ Player.prototype.update = function(dt) {
             endGame();
             endFlag = false;
         }
-        
-        //把用户的名字跟分数进行存储，使用Data中的函数
-        // Data.saveUserScore(Data.userName, player.score);
-        // var getName = setTimeout(function() {
-        //     Data.changeName();
-        // }, 500);
     }
 
     //在屏幕显示分数及血量
@@ -639,9 +640,9 @@ Player.prototype.handleInput = function(e) {
             break;
         case 'space':
             removeObstacle();
-            var randomIndex = Math.floor(Math.random() * 3);
-            Engine.changeMap(randomIndex);
-            // Engine.setTimeSpeed(0.2);
+            // var randomIndex = Math.floor(Math.random() * 3);
+            // Engine.changeMap(randomIndex);
+            // // Engine.setTimeSpeed(0.2);
             break;
         default:
             return;
@@ -689,6 +690,18 @@ var initGame = function () {
     allTreasures = [];
     pavement.reset();
     addObstacle(0);
+    addEnemy(Enemy, 5);
+    addEnemy(Tiger, 1);
+    addRandomTreasure(2);
+};
+
+//被老虎带往下一个场景
+var runWithTiger = function () {
+    allEnemies=[];
+    allObstacles = [];
+    allTreasures = [];
+    pavement.reset();
+    addObstacle(1);
     addEnemy(Enemy, 5);
     addEnemy(Tiger, 1);
     addRandomTreasure(2);
