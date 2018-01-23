@@ -207,8 +207,25 @@ function base64decode(str) {
     //取得名字的函数
     var userName = 'no-name';
     var getName = function() {
-        userName = win.prompt('please enter your name', '齐天大圣') || 'no-name';
+        // userName = win.prompt('please enter your name', '齐天大圣') || 'no-name';
+        swal.withForm({
+        title: 'Cool Swal-Forms example',
+        text: 'Any text that you consider useful for the form',
+        showCancelButton: true,
+        confirmButtonColor: '#DD6B55',
+        confirmButtonText: 'Get form data!',
+        closeOnConfirm: true,
+        formFields: [
+            { id: 'name', placeholder:'Name Field', required },
+            { id: 'nickname', placeholder:'Add a cool nickname' }
+        ]
+    }, function(isConfirm) {
+        // do whatever you want with the form data
+        console.log(this.swalForm) // { name: 'user name', nickname: 'what the user sends' }
+    })
     };
+
+
 
     //初始化取得名字
     // getName();

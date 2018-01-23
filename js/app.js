@@ -617,6 +617,7 @@ Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y - 10);
 };
 
+
 //player 键盘控制函数
 Player.prototype.handleInput = function(e) {
     //记录之前的x,y值
@@ -626,7 +627,6 @@ Player.prototype.handleInput = function(e) {
     switch(e) {
         case 'left':
             this.x -= player.jump_distance * WIDTH;
-            console.log(Data.userName);
             break;
         case 'right':
             this.x += player.jump_distance * WIDTH;
@@ -673,7 +673,7 @@ var allTreasures = [];
 
 //用来获取并改变用户名的函数
 var changeName = function() {
-    Data.userName = Data.win.prompt('请输入您的尊号', '太乙真人') || 'no-name';
+    Data.userName = Data.win.prompt('请输入您的尊号', Data.userName) || '没有名字的人';
 };
 
 
@@ -701,7 +701,7 @@ function endGame() {
     swal({
             position: 'left',
             type: 'success',
-            title: 'Happy Birthday 大头！！',
+            title: 'Game OVer！！',
             text: '得到 ' + player.score + ' 分,' + '排名' + player.score + '名， ' + ' Winner Winner Chicken Dinner!',
             confirmButtonColor: '#9bcb3c',
             confirmButtonText: '再来一局',

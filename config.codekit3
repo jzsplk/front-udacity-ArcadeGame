@@ -376,6 +376,16 @@
 		"sC": 3,
 		"tS": 0
 		},
+	"\/js\/swal-form.js": {
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 0,
+		"oAP": "\/js\/swal-form-min.js",
+		"oF": 0,
+		"sC": 3,
+		"tS": 0
+		},
 	"\/README.md": {
 		"cB": 0,
 		"cS": 0,
