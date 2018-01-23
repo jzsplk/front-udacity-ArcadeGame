@@ -96,7 +96,7 @@ var Enemy = function() {
 Enemy.prototype.initProperty = function() {
     this.x = -(Math.ceil(Math.random() * 3) * WIDTH);
     this.y = (Math.ceil(Math.random() * 4)) * HEIGHT;
-    this.speed = BASIC_SPEED * 0.01 + (50 * Math.ceil(Math.random() * 3));
+    this.speed = BASIC_SPEED + (50 * Math.ceil(Math.random() * 3));
 };
 
 //控制移动的函数
@@ -474,6 +474,7 @@ var Player = function() {
     this.hp = 100;
     this.score = 1;
     this.keynum = 0;
+    // this.rank = 1;
     // this.name = win.prompt('Please enter your name', 'xc');
     //跳跃的距离
     this.jump_distance = 1;
@@ -584,8 +585,13 @@ Player.prototype.update = function(dt) {
     //当player血量低于0，做如下行动
     if(this.hp <= 0 ) {
         if(endFlag === true) {
-            endGame();
+            Data.saveUserScore(Data.userName, player.score);
             endFlag = false;
+            var end = setTimeout(function() {
+                endGame();
+            }, 3000);
+            
+            
         }
     }
 
@@ -709,21 +715,32 @@ var runWithTiger = function () {
 
 initGame(); 
 
+//得到名次
+// var playRank = 0;
+
 //end Game function
 function endGame() {
+
     swal({
             position: 'left',
             type: 'success',
             title: 'Game OVer！！',
-            text: '得到 ' + player.score + ' 分,' + '排名' + player.score + '名， ' + ' Winner Winner Chicken Dinner!',
+            text: '得到 ' + player.score + ' 分,' + '排名' + (player.rank+1) + '名， ' + ' Winner Winner Chicken Dinner!',
             confirmButtonColor: '#9bcb3c',
             confirmButtonText: '再来一局',
     }).then(function(isConfirm) {
         if(isConfirm) {
-            Data.saveUserScore(Data.userName, player.score);
+            // Data.saveUserScore(Data.userName, player.score);
+            console.log(Data.myId);
+            console.log(player.rank);
+            var rank = setTimeout(function() {
+                console.log('setTimeout' + player.rank);
+            },1000);
+            Data.getMyRanking(Data.myId);
             initGame();
         }
     });
+
 }
 
 

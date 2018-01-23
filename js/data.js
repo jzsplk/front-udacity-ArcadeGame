@@ -7,7 +7,7 @@ var Data = (function(global) {
     var API_KEY = "ad11126e9f76200f4c5ca97776ef75cf57f1aee3b19ee3101fd61a2eb51f529a";
     var SECRET_KEY = "1a04f14d799f2ec924c049d8af318d50902af4130606ec1a8af7628b08719432";
     App42.initialize(API_KEY,SECRET_KEY);
-    var gameName = "name",description = "description",result;  
+    var gameName = "name",description = "description",result, myId = "id";  
 
     //create game
     var gameService  = new App42Game();
@@ -27,7 +27,10 @@ var Data = (function(global) {
         success: function(object) {
         var game = JSON.parse(object);    
         result = game.app42.response;  
-        console.log("totalRecords : " + result.totalRecords)  
+        var getRank = setTimeout(function() {
+            console.log("totalRecords : " + result.totalRecords);
+        }, 1000);
+        console.log("totalRecords : " + result.totalRecords);  
         },error: function(error) {
 
             }    
@@ -206,25 +209,6 @@ function base64decode(str) {
 
     //取得名字的函数
     var userName = 'no-name';
-    var getName = function() {
-        // userName = win.prompt('please enter your name', '齐天大圣') || 'no-name';
-        swal.withForm({
-        title: 'Cool Swal-Forms example',
-        text: 'Any text that you consider useful for the form',
-        showCancelButton: true,
-        confirmButtonColor: '#DD6B55',
-        confirmButtonText: 'Get form data!',
-        closeOnConfirm: true,
-        formFields: [
-            { id: 'name', placeholder:'Name Field', required },
-            { id: 'nickname', placeholder:'Add a cool nickname' }
-        ]
-    }, function(isConfirm) {
-        // do whatever you want with the form data
-        console.log(this.swalForm) // { name: 'user name', nickname: 'what the user sends' }
-    })
-    };
-
 
 
     //初始化取得名字
@@ -234,18 +218,58 @@ function base64decode(str) {
     var gameName = "frogger",  result ;    
     var scoreBoardService  = new App42ScoreBoard();
 
+    //向服务器保存数据函数
     var saveUserScore = function(userName, gameScore) {
         var encodedString = base64encode(utf16to8(userName));
         scoreBoardService.saveUserScore(gameName,encodedString,gameScore,{        
         success: function(object)       { 
                    var game = JSON.parse(object);       
                    result = game.app42.response.games.game;          
-                   console.log("gameName is : " + result.name)          
-                   var scoreList = result.scores.score;          
-                   console.log("userName is : " + scoreList.userName)          
-                   console.log("scoreId is : " + scoreList.scoreId)          
-                   console.log("value is : " + scoreList.value)      },        
+                   // console.log("gameName is : " + result.name)          
+                   var scoreList = result.scores.score;
+                   myId = scoreList.scoreId;
+                   console.log('ok' + myId);
+                   getMyRanking(myId);          
+                   // console.log("userName is : " + scoreList.userName)          
+                   // console.log("scoreId is : " + scoreList.scoreId)          
+                   // console.log("value is : " + scoreList.value)      
+               },        
                    error: function(error) {        }    });
+    };
+
+
+    //获取名次的函数
+    var myRankings = 0;
+
+    var getMyRanking = function(id) {
+        var myRanking = 0;
+        var myid = id;
+        scoreBoardService.getTopRankings(gameName,{  
+            success: function(object) 
+            {  
+                var game = JSON.parse(object);  
+                result = game.app42.response.games.game;
+                console.log(result);
+                var scoreList = result.scores.score;
+                if (scoreList instanceof Array) {
+                        for (var i = 0; i < scoreList.length; i++) {
+                            if(scoreList[i].scoreId == myid) {
+                                myRanking = i;
+                                console.log("userRanking : " + myRanking);
+                                player.rank = myRanking;
+                                console.log('play-Rank ' + player.rank);
+                            }
+                            // console.log("userRanking : " + myRanking)
+                        }
+                    } else {
+                        // console.log("userRanking is : " + 'not found')
+                        
+                    }
+            },  
+
+            error: function(error) {  
+            }  
+        });  
     };
 
     //get score by user 
@@ -313,15 +337,15 @@ function base64decode(str) {
                 if (scoreList instanceof Array) {
                         for (var i = 0; i < scoreList.length; i++) {
                             $('.leaderboard').append($('<li class="rank">'  + (i + 1) + ' ' + utf8to16(base64decode(scoreList[i].userName)) + '<small>' + scoreList[i].value +  '</small></li>'));
-                            console.log("userName is : " + scoreList[i].userName)
-                            console.log("userName is : " + utf8to16(base64decode(scoreList[i].userName)))
-                            console.log("scoreId is : " + scoreList[i].scoreId)
-                            console.log("value is : " + scoreList[i].value)
+                            // console.log("userName is : " + scoreList[i].userName)
+                            // console.log("userName is : " + utf8to16(base64decode(scoreList[i].userName)))
+                            // console.log("scoreId is : " + scoreList[i].scoreId)
+                            // console.log("value is : " + scoreList[i].value)
                         }
                     } else {
-                        console.log("userName is : " + scoreList.userName)
-                        console.log("scoreId is : " + scoreList.scoreId)
-                        console.log("value is : " + scoreList.value)
+                        // console.log("userName is : " + scoreList.userName)
+                        // console.log("scoreId is : " + scoreList.scoreId)
+                        // console.log("value is : " + scoreList.value)
                     }
             },  
             error: function(error) {  
@@ -340,9 +364,11 @@ function base64decode(str) {
     return {
         userName: userName,
         saveUserScore: saveUserScore,
-        getName: getName,
         win: win,
-        getTopNRanking: getTopNRanking
+        getTopNRanking: getTopNRanking,
+        getMyRanking: getMyRanking,
+        myId: myId,
+        myRankings: myRankings
        
 
     };
