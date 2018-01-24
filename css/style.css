@@ -173,6 +173,69 @@ main {
   color: white;
 }
 
+/* 移动设备触摸板*/
+.operation-panel {
+    display: none;
+    position: absolute;
+    width: 360px;
+    height: 180px;
+    bottom: 10px;
+    left: 50%;
+    margin-left: -180px;
+    user-select: none;
+}
+
+.arrow-key {
+    background-color: #24519d;
+    color: #fff;
+    text-align: center;
+    font-size: 48px;
+    opacity: 0.7;
+    border-radius: 20px;
+}
+
+.arrow-up {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    margin-left: -50px;
+    width: 100px;
+    height: 75px;
+    line-height: 80px;
+}
+
+.arrow-down {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    margin-left: -50px;
+    width: 100px;
+    height: 75px;
+    line-height: 80px;
+}
+
+.arrow-left {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    margin-top: -50px;
+    width: 100px;
+    height: 100px;
+    line-height: 100px;
+}
+
+.arrow-right {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    margin-top: -50px;
+    width: 100px;
+    height: 100px;
+    line-height: 100px;
+}
+
+
+
 /*swal form*/
 body.stop-scrolling {
   height: 100%;

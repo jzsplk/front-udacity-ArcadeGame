@@ -561,7 +561,7 @@ Player.prototype.checkCollisionsWithObstacle = function(array) {
 //获取名次的函数
 var getPlayerRanking = function(score, results) {
     if (!(results instanceof Array) || score === 1) {
-        return 1;
+        return '没有';
     }
 
     
@@ -574,6 +574,8 @@ var getPlayerRanking = function(score, results) {
             
         }
     }
+
+    return '莫名其妙的';
 };
 
 
@@ -610,7 +612,7 @@ Player.prototype.update = function(dt) {
             endFlag = false;
             //先用save函数获取名次，存储用户数据
             Data.saveUserScore(Data.userName, player.score);
-            player.rank = getPlayerRanking(player.score, player.result) - 1;
+            player.rank = getPlayerRanking(player.score, player.result);
             var rank = setTimeout(function() {
                 endGame();
             },3000);
@@ -749,7 +751,7 @@ var endGame = function() {
             position: 'left',
             type: 'success',
             title: 'Game OVer！！',
-            text: '得到 ' + player.score + ' 分,' + '排名' + (player.rank+1) + '名， ' + '超过了全球' + percent + '%的玩家，Winner Winner Chicken Dinner!',
+            text: '得到 ' + player.score + ' 分,' + '排名' + player.rank + '名， ' + '超过了全球' + percent + '%的玩家，Winner Winner Chicken Dinner!',
             confirmButtonColor: '#9bcb3c',
             confirmButtonText: '继续游戏？',
     }).then(function(isConfirm) {

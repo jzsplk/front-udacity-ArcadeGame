@@ -9,7 +9,13 @@ Manager = (function(global) {
         rankingButton = doc.getElementById('btn-ranking'),
         instructionButton = doc.getElementById('btn-instruction'),
         restartButton = doc.getElementById('btn-restart'),
-        leaderBoard = doc.getElementById('leader-board');
+        leaderBoard = doc.getElementById('leader-board'),
+
+        operationPanel = doc.getElementById('operation-panel'),
+        arrowUp = doc.getElementById('arrow-up'),
+        arrowDown = doc.getElementById('arrow-down'),
+        arrowLeft = doc.getElementById('arrow-left'),
+        arrowRight = doc.getElementById('arrow-right');
     
     //添加菜单的响应事件
     var isMenuHidden = true;
@@ -76,6 +82,59 @@ Manager = (function(global) {
     restartButton.onclick = function() {
         initGame();
     };
+
+/* 判断登陆设备是否是PC */
+    var isPC = function() {
+        var userAgentInfo = navigator.userAgent;
+        var Agents = ["Android", "iPhone",
+            "SymbianOS", "Windows Phone",
+            "iPad", "iPod"
+        ];
+        var flag = true;
+        for (var v = 0; v < Agents.length; v++) {
+            if (userAgentInfo.indexOf(Agents[v]) > 0) {
+                flag = false;
+                break;
+            }
+        }
+        return flag;
+    };
+
+    /* 根据登陆设备决定是否显示模拟操作面板 */
+        if (isPC()) {
+            operationPanel.style.display = 'none';
+        } else {
+            operationPanel.style.display = 'block';
+            /* 再来绑定模拟操作面板上的事件 */
+            arrowUp.ontouchstart = function() {
+                player.handleInput('up');
+            };
+            arrowDown.ontouchstart = function() {
+                player.handleInput('down');
+            };
+            arrowLeft.ontouchstart = function() {
+                player.handleInput('left');
+            };
+            arrowRight.ontouchstart = function() {
+                player.handleInput('right');
+            };
+
+            /* 以下两个事件监听阻止了移动设备上的双击放大效果 */
+            doc.addEventListener('touchstart',function (event) {
+                if(event.touches.length>1){
+                    event.preventDefault();
+                }
+            });
+            var lastTouchEnd=0;
+            doc.addEventListener('touchend',function (event) {
+                var now=(new Date()).getTime();
+                if(now-lastTouchEnd<=500){
+                    event.preventDefault();
+                }
+                lastTouchEnd=now;
+            },false);
+        }
+
 
     // //初始化游戏函数
     // var initGame = function () {
