@@ -197,7 +197,7 @@ main {
 .arrow-up {
     position: absolute;
     top: 0;
-    left: 50%;
+    left: 25%;
     margin-left: -50px;
     width: 100px;
     height: 75px;
@@ -207,7 +207,7 @@ main {
 .arrow-down {
     position: absolute;
     bottom: 0;
-    left: 50%;
+    left: 25%;
     margin-left: -50px;
     width: 100px;
     height: 75px;
@@ -216,7 +216,7 @@ main {
 
 .arrow-left {
     position: absolute;
-    left: 0;
+    left: -20%;
     top: 50%;
     margin-top: -50px;
     width: 100px;
@@ -226,7 +226,7 @@ main {
 
 .arrow-right {
     position: absolute;
-    right: 0;
+    right: 30%;
     top: 50%;
     margin-top: -50px;
     width: 100px;
@@ -234,10 +234,10 @@ main {
     line-height: 100px;
 }
 
-.arrow-right {
+.space {
     position: absolute;
     right: 0;
-    top: 70%;
+    top: 50%;
     margin-top: -50px;
     width: 100px;
     height: 100px;
