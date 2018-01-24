@@ -30,6 +30,8 @@ var Engine = (function(global) {
     canvas.width = 505;
     canvas.height = 606;
     doc.body.appendChild(canvas);
+    //自定义大小
+
 
     //控制canvas的位置
     // canvas.style.marginTop = '-11px';
@@ -172,12 +174,15 @@ var Engine = (function(global) {
         allEnemies.forEach(function(enemy) {
             enemy.render();
         });
+
         allObstacles.forEach(function(ob) {
             ob.render();
         });
+        
         allTreasures.forEach(function(ob) {
             ob.render();
         });
+
         player.render();
     }
 
