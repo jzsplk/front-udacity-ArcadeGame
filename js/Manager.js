@@ -15,7 +15,8 @@ Manager = (function(global) {
         arrowUp = doc.getElementById('arrow-up'),
         arrowDown = doc.getElementById('arrow-down'),
         arrowLeft = doc.getElementById('arrow-left'),
-        arrowRight = doc.getElementById('arrow-right');
+        arrowRight = doc.getElementById('arrow-right'),
+        sapce = doc.getElementById('space');
     
     //添加菜单的响应事件
     var isMenuHidden = true;
@@ -117,6 +118,9 @@ Manager = (function(global) {
             };
             arrowRight.ontouchstart = function() {
                 player.handleInput('right');
+            };
+            arrowRight.ontouchstart = function() {
+                player.handleInput('space');
             };
 
             /* 以下两个事件监听阻止了移动设备上的双击放大效果 */

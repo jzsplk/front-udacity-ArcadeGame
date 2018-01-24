@@ -234,6 +234,16 @@ main {
     line-height: 100px;
 }
 
+.arrow-right {
+    position: absolute;
+    right: 0;
+    top: 70%;
+    margin-top: -50px;
+    width: 100px;
+    height: 100px;
+    line-height: 100px;
+}
+
 
 
 /*swal form*/
