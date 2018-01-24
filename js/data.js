@@ -201,11 +201,11 @@ function base64decode(str) {
     }
 
     //测试Base64转码
-    var userName1  = '齐天大圣';
-    var encodedString = base64encode(utf16to8(userName1));
-    console.log("Encoded String is : " + encodedString);
-    var decodedString = utf8to16(base64decode(encodedString));
-    console.log("Decoded String is : " + decodedString);
+    // var userName1  = '齐天大圣';
+    // var encodedString = base64encode(utf16to8(userName1));
+    // console.log("Encoded String is : " + encodedString);
+    // var decodedString = utf8to16(base64decode(encodedString));
+    // console.log("Decoded String is : " + decodedString);
 
     //取得名字的函数
     var userName = 'no-name';
@@ -228,8 +228,8 @@ function base64decode(str) {
                    // console.log("gameName is : " + result.name)          
                    var scoreList = result.scores.score;
                    myId = scoreList.scoreId;
-                   console.log('ok' + myId);
-                   getMyRanking(myId);          
+                   console.log('ok myId = ' + myId);
+                   // getMyRanking(myId);          
                    // console.log("userName is : " + scoreList.userName)          
                    // console.log("scoreId is : " + scoreList.scoreId)          
                    // console.log("value is : " + scoreList.value)      
@@ -237,40 +237,6 @@ function base64decode(str) {
                    error: function(error) {        }    });
     };
 
-
-    //获取名次的函数
-    var myRankings = 0;
-
-    var getMyRanking = function(id) {
-        var myRanking = 0;
-        var myid = id;
-        scoreBoardService.getTopRankings(gameName,{  
-            success: function(object) 
-            {  
-                var game = JSON.parse(object);  
-                result = game.app42.response.games.game;
-                console.log(result);
-                var scoreList = result.scores.score;
-                if (scoreList instanceof Array) {
-                        for (var i = 0; i < scoreList.length; i++) {
-                            if(scoreList[i].scoreId == myid) {
-                                myRanking = i;
-                                console.log("userRanking : " + myRanking);
-                                player.rank = myRanking;
-                                console.log('play-Rank ' + player.rank);
-                            }
-                            // console.log("userRanking : " + myRanking)
-                        }
-                    } else {
-                        // console.log("userRanking is : " + 'not found')
-                        
-                    }
-            },  
-
-            error: function(error) {  
-            }  
-        });  
-    };
 
     //get score by user 
     // var userName = "Nick"    
@@ -301,31 +267,26 @@ function base64decode(str) {
     //            }   
     //         }); 
 
-    //get top rankings
-    // scoreBoardService.getTopRankings(gameName,{
-    //     success: function(object)       {
-    //         var game = JSON.parse(object);            
-    //         result = game.app42.response.games.game;          
-    //         console.log("gameName is : " + result.name)          
-    //         var scoreList = result.scores.score;          
-    //         if (scoreList instanceof Array) {
-    //             for (var i = 0; i < scoreList.length; i++) { 
-    //                 console.log("userName is : " + scoreList[i].userName)
-    //                 console.log("scoreId is : " + scoreList[i].scoreId)                      
-    //                 console.log("value is : " + scoreList[i].value)                  
-    //             }              
-    //         } else {                  
-    //             console.log("userName is : " + scoreList.userName)                  
-    //             console.log("scoreId is : " + scoreList.scoreId)                  
-    //             console.log("value is : " + scoreList.value)              
-    //         }      
-    //     },        
-    //     error: function(error) {        
-    //     }    
-    // });   
+    //为了得到玩家排名先获取分数数据的函数rankings result
+    var getRankingResults = function() {
+        scoreBoardService.getTopRankings(gameName,{
+        success: function(object)       {
+            var game = JSON.parse(object);            
+            result = game.app42.response.games.game;          
+            console.log("gameName is : " + result.name)          
+            var scoreList = result.scores.score;
+            console.log(scoreList);
+            player.result = scoreList; 
+            console.log(player.result);              
+        },        
+        error: function(error) {        
+        }    
+    });  
+    };
+     
 
-    //get top N ranking
-    var getTopNRanking = function(num) {
+    //列出排名100的玩家显示在leaderboard中
+        var getTopNRanking = function(num) {
         var max = num; 
         scoreBoardService.getTopNRankings(gameName,max,{  
             success: function(object) 
@@ -363,13 +324,10 @@ function base64decode(str) {
 
     return {
         userName: userName,
-        saveUserScore: saveUserScore,
         win: win,
+        saveUserScore: saveUserScore,
         getTopNRanking: getTopNRanking,
-        getMyRanking: getMyRanking,
         myId: myId,
-        myRankings: myRankings
-       
-
+        getRankingResults: getRankingResults
     };
 })(this);

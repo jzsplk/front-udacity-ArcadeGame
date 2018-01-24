@@ -4,6 +4,9 @@ HEIGHT = 83,
 BASIC_SPEED = 100,
 HighScore = 0;
 
+//记录超过玩家的比例
+var percent = 0;
+
 //为了控制触发次数
 var ScoreFlag = true;
 var endFlag = true;
@@ -212,7 +215,7 @@ Entity.prototype.initPosition = function() {
     
     //在pavement记录此坐标
     pavement[row][col] = true;
-    console.log(pavement);
+    // console.log(pavement);
 };
 
 
@@ -349,7 +352,7 @@ var hitTreasureAction = function(obj) {
     }
     else if(obj instanceof OrangeGem) {
         allEnemies.forEach(function(enemy) {
-            enemy.x = - 6 * WIDTH;
+            enemy.x = - 3 * WIDTH;
         });
     }
 };
@@ -474,6 +477,7 @@ var Player = function() {
     this.hp = 100;
     this.score = 1;
     this.keynum = 0;
+    this.result;
     // this.rank = 1;
     // this.name = win.prompt('Please enter your name', 'xc');
     //跳跃的距离
@@ -494,7 +498,7 @@ Player.prototype.resetPlayer = function() {
             //主题这里改变地图，地图还是会闪动
             // Engine.changeMap(randomIndex);
             ScoreFlag = true;
-            endFlag = true;
+            // endFlag = true;
             // player.hp = 100;
         }, 300);
         
@@ -552,8 +556,27 @@ Player.prototype.checkCollisionsWithObstacle = function(array) {
         collision(element);       
     }); 
 };
-// 此为游戏必须的函数，用来更新敌人的位置
-// 参数: dt ，表示时间间隙
+
+// 获取玩家名次的函数
+//获取名次的函数
+var getPlayerRanking = function(score, results) {
+    if (!(results instanceof Array) || score === 1) {
+        return 1;
+    }
+
+    
+
+    for(var i = 0; i < results.length; i++) {
+        if(results[i].value <= score) {
+            percent = Math.floor(((results.length - (i + 1)) / results.length) * 10000) / 100;
+            return i + 1;
+            //得到名次超过玩家的比例
+            
+        }
+    }
+};
+
+
 Player.prototype.update = function(dt) {
     
     // 当player到达河对岸的逻辑，此处用ScoreFlag来控制其只触发一次
@@ -572,8 +595,6 @@ Player.prototype.update = function(dt) {
             backgroundFlag = true;
         }
         this.resetPlayer();
-
-
     }
     else if(this.y > 5 * HEIGHT) {
         this.y = 5 * HEIGHT;
@@ -584,13 +605,16 @@ Player.prototype.update = function(dt) {
     
     //当player血量低于0，做如下行动
     if(this.hp <= 0 ) {
-        if(endFlag === true) {
-            Data.saveUserScore(Data.userName, player.score);
+        //用endFlag控制函数只执行一次
+        if(endFlag) {
             endFlag = false;
-            var end = setTimeout(function() {
+            //先用save函数获取名次，存储用户数据
+            Data.saveUserScore(Data.userName, player.score);
+            player.rank = getPlayerRanking(player.score, player.result) - 1;
+            var rank = setTimeout(function() {
                 endGame();
-            }, 3000);
-            
+            },3000);
+            console.log('end toggled');
             
         }
     }
@@ -686,8 +710,9 @@ var changeName = function() {
 
 //初始化游戏函数
 var initGame = function () {
+    Data.getRankingResults();
     changeName();
-    player.score = 0;
+    player.score = 1;
     player.resetPlayer();
     player.hp = 100;
     player.keynum = 0;
@@ -715,29 +740,26 @@ var runWithTiger = function () {
 
 initGame(); 
 
-//得到名次
-// var playRank = 0;
 
-//end Game function
-function endGame() {
+
+//结束游戏函数end Game function
+var endGame = function() {
 
     swal({
             position: 'left',
             type: 'success',
             title: 'Game OVer！！',
-            text: '得到 ' + player.score + ' 分,' + '排名' + (player.rank+1) + '名， ' + ' Winner Winner Chicken Dinner!',
+            text: '得到 ' + player.score + ' 分,' + '排名' + (player.rank+1) + '名， ' + '超过了全球' + percent + '%的玩家，Winner Winner Chicken Dinner!',
             confirmButtonColor: '#9bcb3c',
-            confirmButtonText: '再来一局',
+            confirmButtonText: '继续游戏？',
     }).then(function(isConfirm) {
         if(isConfirm) {
             // Data.saveUserScore(Data.userName, player.score);
-            console.log(Data.myId);
-            console.log(player.rank);
-            var rank = setTimeout(function() {
-                console.log('setTimeout' + player.rank);
-            },1000);
-            Data.getMyRanking(Data.myId);
+            // console.log(Data.myId);
+            // console.log('play.rank is ' + player.rank);
+            // Data.getMyRanking(Data.myId);
             initGame();
+            endFlag = true;
         }
     });
 
