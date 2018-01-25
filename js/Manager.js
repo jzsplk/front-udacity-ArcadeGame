@@ -103,7 +103,7 @@ Manager = (function(global) {
 
     /* 根据登陆设备决定是否显示模拟操作面板 */
         if (isPC()) {
-            operationPanel.style.display = 'block';
+            operationPanel.style.display = 'none';
         } else {
             operationPanel.style.display = 'block';
             /* 再来绑定模拟操作面板上的事件 */
