@@ -300,3 +300,10 @@ main {
     border-color: #222;
     border-radius: 5px;
 }
+
+.board-content {
+    margin: auto;
+    overflow: hidden;
+    position: relative;
+    width: 400px;
+}
