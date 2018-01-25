@@ -22,13 +22,13 @@ This game was built as a Udacity Course project. The purpose of the project is t
 
 - Codekit
 
-### HTML5 template:
+### How to convert Base64:
 
-- <https://app.pluralsight.com/player?course=designing-single-page-product-website-photoshop-html-1812&author=jan-zavrl&name=designing-single-page-product-website-photoshop-html-1812-m2&clip=15&mode=live>
+- <http://www.ruanyifeng.com/blog/2008/06/base64.html>
 
-### Array shuffle:
+### LeaderBoard API: 
 
-- <http://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array>
+- <http://www.emanueleferonato.com/2016/03/14/manage-leaderboards-in-your-html5-game-with-app42-cloud-api/>
 
 
 ### How to create a sprite sheet

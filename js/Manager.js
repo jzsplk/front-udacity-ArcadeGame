@@ -11,6 +11,10 @@ Manager = (function(global) {
         restartButton = doc.getElementById('btn-restart'),
         leaderBoard = doc.getElementById('leader-board'),
 
+        instructionButton = doc.getElementById('btn-instruction'),
+        instructionBoard = doc.getElementById('instruction-board'),
+        closeInstructionButton = doc.getElementById('btn-close-instruction'),
+
         operationPanel = doc.getElementById('operation-panel'),
         arrowUp = doc.getElementById('arrow-up'),
         arrowDown = doc.getElementById('arrow-down'),
@@ -82,6 +86,24 @@ Manager = (function(global) {
 
     restartButton.onclick = function() {
         initGame();
+    };
+
+/* 以下一部分内容是关于排行榜面板的，首先动态控制排行榜的高度，让它充满屏幕 */
+    instructionBoard.style.height = doc.documentElement.clientHeight + 'px';
+
+    /* 点击游戏说明按钮时，弹出排行榜 */
+    instructionButton.onclick = function(e) {
+        /* 点击该按钮时，点击事件应当停止向上传递，否则游戏会失去暂停效果 */
+        e.stopPropagation();
+        hideMenu();
+        instructionBoard.style.display = 'block';
+    };
+
+    /* 点击游戏说明面板里的OK按钮时，关闭面板
+     * 由于该点击事件会向上传递到document，因此会触发hideMenu()，从而继续游戏
+     */
+    closeInstructionButton.onclick = function() {
+        instructionBoard.style.display = 'none';
     };
 
 /* 判断登陆设备是否是PC */
