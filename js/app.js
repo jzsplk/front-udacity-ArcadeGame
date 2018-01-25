@@ -615,7 +615,7 @@ Player.prototype.update = function(dt) {
             player.rank = getPlayerRanking(player.score, player.result);
             var rank = setTimeout(function() {
                 endGame();
-            },3000);
+            },500);
             console.log('end toggled');
             
         }
