@@ -261,6 +261,13 @@ main {
     user-select: none;
 }
 
+.board-content {
+    margin: auto;
+    overflow: hidden;
+    position: relative;
+    width: 400px;
+}
+
 /* 游戏说明*/
 .instruction-content {
     margin-top: 40px;
@@ -301,9 +308,3 @@ main {
     border-radius: 5px;
 }
 
-.board-content {
-    margin: auto;
-    overflow: hidden;
-    position: relative;
-    width: 400px;
-}
