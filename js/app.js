@@ -124,9 +124,9 @@ Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y + 15, 60, 105);
 };
 
-//Tiger动态的Emeny
-var Tiger = function() {
-    // Tiger的默认属性，sprite,width,height,ticksPerFrame
+//Cat动态的Emeny
+var Cat = function() {
+    // Cat的默认属性，sprite,width,height,ticksPerFrame
     this.height = 73;
     this.width = 1000;
     this.tickCount = 0;
@@ -139,20 +139,20 @@ var Tiger = function() {
 };
 
 //定义速度跟位置的函数
-Tiger.prototype.initProperty = function() {
+Cat.prototype.initProperty = function() {
     this.x = -(Math.ceil(Math.random() * 3) * WIDTH);
     this.y = (Math.ceil(Math.random() * 4)) * HEIGHT;
     this.speed = BASIC_SPEED + (10 * Math.ceil(Math.random() * 2));
 };
 
 //控制移动的函数
-Tiger.prototype.move = function(dt) {
+Cat.prototype.move = function(dt) {
     this.x += dt * this.speed; 
 };
 
 // 此为游戏必须的函数，用来更新敌人的位置
 // tickCount为控制动画的参数
-Tiger.prototype.update = function(dt) {
+Cat.prototype.update = function(dt) {
     this.tickCount += 1;
 
             if (this.tickCount > this.ticksPerFrame) {
@@ -175,7 +175,7 @@ Tiger.prototype.update = function(dt) {
 };
 
 // 此为游戏必须的函数，用来在屏幕上画出敌人，
-Tiger.prototype.render = function() {
+Cat.prototype.render = function() {
 
     // Draw the animation
     ctx.drawImage(
@@ -512,7 +512,7 @@ function collision(item) {
     else if ( (item instanceof Obstacle) && ( (item.y === player.y) && (item.x === player.x) ) ) {
         return true;
     }
-    else if ((item instanceof Tiger) &&  ( (item.y === player.y) && (Math.abs(item.x - player.x) < 80) ) ) {
+    else if ((item instanceof Cat) &&  ( (item.y === player.y) && (Math.abs(item.x - player.x) < 80) ) ) {
         return true;
     }
     else {
@@ -532,14 +532,14 @@ function checkCollisionsWithObstacle(array) {
 //处理player与Enemy碰撞的函数
 Player.prototype.checkCollisionsWithEnemy = function(array) {
     array.forEach(function(element) {
-        if(collision(element) && element instanceof Tiger) {
+        if(collision(element) && element instanceof Cat) {
             player.x = element.x;
             
             if((player.x > 4 * WIDTH) & backgroundFlag) {
 
                 var randomIndex = Math.floor(Math.random() * 3);
                 Engine.changeMap(randomIndex);
-                runWithTiger();
+                runWithCat();
                 console.log('到底了');
                 backgroundFlag = false;
             }
@@ -724,25 +724,23 @@ var initGame = function () {
     pavement.reset();
     addObstacle(0);
     addEnemy(Enemy, 5);
-    addEnemy(Tiger, 1);
+    addEnemy(Cat, 1);
     addRandomTreasure(2);
 };
 
-//被老虎带往下一个场景
-var runWithTiger = function () {
+//被猫带往下一个场景
+var runWithCat = function () {
     allEnemies=[];
     allObstacles = [];
     allTreasures = [];
     pavement.reset();
     addObstacle(1);
     addEnemy(Enemy, 5);
-    addEnemy(Tiger, 1);
+    addEnemy(Cat, 1);
     addRandomTreasure(2);
 };
 
 initGame(); 
-
-
 
 //结束游戏函数end Game function
 var endGame = function() {
