@@ -234,11 +234,15 @@ function addObstacle(num) {
 //移除obstacle的函数
 var removeObstacle = function() {
     if(allObstacles.length === 0) {
+        //改变文字颜色并显示相应文字
+        ctx.fillStyle = "orange";
         Manager.showWords = "并没有石头";
         return;
     }
 
     if(player.keynum <= 0) {
+        //改变文字颜色并显示相应文字
+        ctx.fillStyle = "orange";
         Manager.showWords = "🔑用完了";
         return;
     }
@@ -249,7 +253,9 @@ var removeObstacle = function() {
             var col = allObstacles[i].x / WIDTH;
             pavement[row][col] = false;
             player.keynum -= 1;
-            Manager.showWords = "芝麻开门";
+            //改变文字颜色并显示相应文字
+            ctx.fillStyle = "orange";
+            Manager.showWords = "5毛特效：芝麻开门";
             allObstacles.splice(i ,1);
         } 
     }
