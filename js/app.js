@@ -313,6 +313,7 @@ function addRandomTreasure(num) {
 var timerId;
 
 var BlueGemAction = function() {
+    //改变文字颜色并显示相应文字
     ctx.fillStyle = "#35e";
     Manager.showWords = "时间变慢了";
     leftTime = 5000;
@@ -348,6 +349,7 @@ var hitTreasureAction = function(obj) {
     if(obj instanceof Key) {
         player.keynum += 1;
         player.score += 1;
+        //改变文字颜色并显示相应文字
         ctx.fillStyle = "#EE82EE";
         Manager.showWords = "+" + 1;
     }
@@ -357,6 +359,7 @@ var hitTreasureAction = function(obj) {
         } else {
             player.hp = 100;
             player.score += 3;
+            //改变文字颜色并显示相应文字
             ctx.fillStyle = "#4B0082";
             Manager.showWords = "+" + 3;
         }
@@ -367,17 +370,20 @@ var hitTreasureAction = function(obj) {
     else if(obj instanceof GreenGem) {
         player.jump_distance = 2;
         player.score += 1;
+        //改变文字颜色并显示相应文字
         ctx.fillStyle = "green";
         Manager.showWords ="刘翔附体" + "+" + 1;
     }
     else if(obj instanceof Coin) {
         player.score += 3 * stage;
+        //改变文字颜色并显示相应文字
         ctx.fillStyle = "#FFD700";
         Manager.showWords = "+" + (3 * stage);
     }
     else if(obj instanceof OrangeGem) {
         allEnemies.forEach(function(enemy) {
             enemy.x = - 3 * WIDTH;
+            //改变文字颜色并显示相应文字
             ctx.fillStyle = "orange";
             Manager.showWords = "🐞被赶跑了" ;
         });
@@ -561,6 +567,10 @@ Player.prototype.checkCollisionsWithEnemy = function(array) {
         if(collision(element) && element instanceof Cat) {
             //如果玩家跟Cat碰撞，玩家“骑到”Cat身上，不掉血
             player.x = element.x;
+            //改变文字及其颜色
+            ctx.fillStyle = "#FF4500";
+            Manager.showWords = "老司机带带我";
+
             //如果玩家骑Cat到屏幕的最右侧，更改游戏背景，重置新场景中的障碍跟宝物
             if((player.x > 4 * WIDTH) & backgroundFlag) {
                 //随机换一个游戏背景
