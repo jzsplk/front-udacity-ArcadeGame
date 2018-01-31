@@ -3,6 +3,7 @@ Manager = (function(global) {
 
     /* 下面这些DOM元素用来反应游戏状态 */
     var doc = global.document,
+        win = global.window,
         scoreTxt = doc.getElementById('score'),
         menuButton = doc.getElementById('btn-menu'),
         menu = doc.getElementById('menu'),
@@ -161,7 +162,29 @@ Manager = (function(global) {
             },false);
         }
 
+    //暂停游戏函数
+    var pauseGame = function() {
+        player.jump_distance = 0;
 
+        Engine.setTimeSpeed(0);
+
+        pauseTimer();
+    };
+
+    //继续游戏函数
+    var continueGame = function() {
+        player.jump_distance = 1;
+        Engine.setTimeSpeed(1);
+        if(leftTime > 0) {
+            startTimer();
+        }
+    };
+
+
+    //暂停计时器
+    var pauseTimer = function() {
+        win.clearInterval(timerId);
+    };
     // //初始化游戏函数
     // var initGame = function () {
     //     Data.changeName();
@@ -182,8 +205,10 @@ Manager = (function(global) {
     // initGame();
     
 
-    // return {
-    //    initGame: initGame
-    // };
+    return {
+       pauseGame: pauseGame,
+       continueGame: continueGame,
+       pauseTimer: pauseTimer
+    };
 
 })(this);

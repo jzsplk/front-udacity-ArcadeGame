@@ -1,7 +1,6 @@
 var Data = (function(global) {
-    /* 实现定义我们会在这个作用于用到的变量
-     * 创建 canvas 元素，拿到对应的 2D 上下文
-     * 设置 canvas 元素的高/宽 然后添加到dom中
+    /* 用于提供排行榜服务
+     * 由于该API不支持中文，采用了Base64转码
      */
     var win = global.window;
     var API_KEY = "ad11126e9f76200f4c5ca97776ef75cf57f1aee3b19ee3101fd61a2eb51f529a";
