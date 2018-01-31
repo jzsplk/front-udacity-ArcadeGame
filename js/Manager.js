@@ -23,6 +23,9 @@ Manager = (function(global) {
         arrowRight = doc.getElementById('arrow-right'),
         sapce = doc.getElementById('space');
     
+    //控制玩家头顶文字的变量
+    var showWords = "1";
+
     //添加菜单的响应事件
     var isMenuHidden = true;
     var showMenu = function() {
@@ -208,7 +211,8 @@ Manager = (function(global) {
     return {
        pauseGame: pauseGame,
        continueGame: continueGame,
-       pauseTimer: pauseTimer
+       pauseTimer: pauseTimer,
+       showWords: showWords
     };
 
 })(this);

@@ -4,6 +4,10 @@ HEIGHT = 83,
 BASIC_SPEED = 100,
 HighScore = 0;
 
+//设置任务头顶文字对齐
+ctx.textAlign = "center";
+//设置玩家头顶文字的颜色字体
+ctx.font = "32px serif";
 
 //记录超过玩家的比例
 var percent = 0;
@@ -230,10 +234,12 @@ function addObstacle(num) {
 //移除obstacle的函数
 var removeObstacle = function() {
     if(allObstacles.length === 0) {
+        Manager.showWords = "并没有石头";
         return;
     }
 
     if(player.keynum <= 0) {
+        Manager.showWords = "🔑用完了";
         return;
     }
 
@@ -243,6 +249,7 @@ var removeObstacle = function() {
             var col = allObstacles[i].x / WIDTH;
             pavement[row][col] = false;
             player.keynum -= 1;
+            Manager.showWords = "芝麻开门";
             allObstacles.splice(i ,1);
         } 
     }
@@ -306,6 +313,8 @@ function addRandomTreasure(num) {
 var timerId;
 
 var BlueGemAction = function() {
+    ctx.fillStyle = "#35e";
+    Manager.showWords = "时间变慢了";
     leftTime = 5000;
     startTimer();
 }
@@ -339,6 +348,8 @@ var hitTreasureAction = function(obj) {
     if(obj instanceof Key) {
         player.keynum += 1;
         player.score += 1;
+        ctx.fillStyle = "#EE82EE";
+        Manager.showWords = "+" + 1;
     }
     else if(obj instanceof Heart) {
         if(player.hp < 70) {
@@ -346,6 +357,8 @@ var hitTreasureAction = function(obj) {
         } else {
             player.hp = 100;
             player.score += 3;
+            ctx.fillStyle = "#4B0082";
+            Manager.showWords = "+" + 3;
         }
     }
     else if(obj instanceof BlueGem) {
@@ -354,13 +367,19 @@ var hitTreasureAction = function(obj) {
     else if(obj instanceof GreenGem) {
         player.jump_distance = 2;
         player.score += 1;
+        ctx.fillStyle = "green";
+        Manager.showWords ="刘翔附体" + "+" + 1;
     }
     else if(obj instanceof Coin) {
         player.score += 3 * stage;
+        ctx.fillStyle = "#FFD700";
+        Manager.showWords = "+" + (3 * stage);
     }
     else if(obj instanceof OrangeGem) {
         allEnemies.forEach(function(enemy) {
             enemy.x = - 3 * WIDTH;
+            ctx.fillStyle = "orange";
+            Manager.showWords = "🐞被赶跑了" ;
         });
     }
 };
@@ -505,6 +524,8 @@ Player.prototype.resetPlayer = function() {
             //复原积分和血量的Flag
             ScoreFlag = true;
             HpFlag = true;
+            //回复玩家头顶文字
+            Manager.showWords = "";
             
         
 };
@@ -558,6 +579,9 @@ Player.prototype.checkCollisionsWithEnemy = function(array) {
             if(HpFlag) {
                 //甲虫速度越快，造成伤害越高
                 player.hp -= (10 + Math.floor(Math.sqrt(element.speed)));
+                //显示掉的血量
+                ctx.fillStyle = "red";
+                Manager.showWords = "-" + (10 + Math.floor(Math.sqrt(element.speed)));
             }
             
             HpFlag = false;
@@ -677,6 +701,9 @@ Player.prototype.update = function(dt) {
 // 此为游戏必须的函数，用来在屏幕上画出敌人，
 Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y - 10);
+    
+    //在玩家头顶显示文字
+    ctx.fillText(Manager.showWords, player.x+30, player.y+30);
 };
 
 
@@ -689,18 +716,25 @@ Player.prototype.handleInput = function(e) {
     switch(e) {
         case 'left':
             this.x -= player.jump_distance * WIDTH;
+            //清除文字
+            Manager.showWords = "";
             break;
         case 'right':
             this.x += player.jump_distance * WIDTH;
+            Manager.showWords = "";
             break;
         case 'up':
             this.y -= player.jump_distance * HEIGHT;
+            Manager.showWords = "";
             break;
         case 'down':
             this.y += player.jump_distance * HEIGHT;
+            Manager.showWords = "";
             break;
         case 'space':
+            ctx.fillStyle = "#35e";
             removeObstacle();
+
             // var randomIndex = Math.floor(Math.random() * 3);
             // Engine.changeMap(randomIndex);
             // // Engine.setTimeSpeed(0.2);
