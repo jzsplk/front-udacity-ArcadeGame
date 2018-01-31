@@ -47,5 +47,4 @@ This game was built as a Udacity Course project. The purpose of the project is t
 
 #### Udacity Resources:
 
-- [Project Description](https://classroom.udacity.com/nanodegrees/nd016beta/parts/45080fba-9129-4bd9-869f-548be080accf/modules/677caa06-55d6-444e-a853-08627c5516a7/lessons/4227cbf4-f6ce-4798-a7e5-b1ce3b9e7c33/concepts/0a38769e-8e23-4e3f-9482-d8d1aa80fbb6)
-- [Project Rubric](https://review.udacity.com/#!/rubrics/591/view)
+- [Project Description](https://classroom.udacity.com/nanodegrees/nd001-cn-advanced/parts/c376a6ff-489b-4611-9f54-d19ef2f8a60c/modules/bae316ce-be90-4d30-b864-55d65207aa8c/lessons/2696458597239847/concepts/25968188800923)
