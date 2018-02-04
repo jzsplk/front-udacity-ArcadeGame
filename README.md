@@ -48,3 +48,4 @@ This game was built as a Udacity Course project. The purpose of the project is t
 #### Udacity Resources:
 
 - [Project Description](https://classroom.udacity.com/nanodegrees/nd001-cn-advanced/parts/c376a6ff-489b-4611-9f54-d19ef2f8a60c/modules/bae316ce-be90-4d30-b864-55d65207aa8c/lessons/2696458597239847/concepts/25968188800923)
+- [Project Rubric](https://review.udacity.com/#!/rubrics/499/view)
