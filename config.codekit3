@@ -4,11 +4,31 @@
 	{
 		"name": "Process All Remaining Files and Folders",
 		"stepType": 1,
-		"uuidString": "4EFED22D-9BF3-48D8-A87E-D49776DCB0E7"
+		"uuidString": "DD0F7571-4ED3-46EC-A3CF-07C1BFB4A913"
 		}
 	],
 "creatorBuild": "26148",
 "files": {
+	"\/App42-all-3.0.min.js": {
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 0,
+		"oAP": "\/App42-all-3.0.min-min.js",
+		"oF": 0,
+		"sC": 3,
+		"tS": 0
+		},
+	"\/css\/style-min.css": {
+		"aP": 1,
+		"bl": 0,
+		"ft": 16,
+		"ma": 0,
+		"oA": 0,
+		"oAP": "\/css\/style-min-min.css",
+		"oF": 0,
+		"oS": 3
+		},
 	"\/css\/style.css": {
 		"aP": 1,
 		"bl": 0,
@@ -19,33 +39,11 @@
 		"oF": 0,
 		"oS": 3
 		},
-	"\/images\/1511.png": {
+	"\/images\/astronaut3.png": {
 		"ft": 32768,
-		"iS": 10672,
+		"iS": 4782,
 		"oA": 0,
-		"oAP": "\/images\/1511.png",
-		"oF": 0,
-		"oIPL": 0,
-		"opt": 0,
-		"oT": 1,
-		"q": 100
-		},
-	"\/images\/50982.png": {
-		"ft": 32768,
-		"iS": 9232,
-		"oA": 0,
-		"oAP": "\/images\/50982.png",
-		"oF": 0,
-		"oIPL": 0,
-		"opt": 0,
-		"oT": 1,
-		"q": 100
-		},
-	"\/images\/78182.png": {
-		"ft": 32768,
-		"iS": 7828,
-		"oA": 0,
-		"oAP": "\/images\/78182.png",
+		"oAP": "\/images\/astronaut3.png",
 		"oF": 0,
 		"oIPL": 0,
 		"opt": 0,
@@ -123,6 +121,17 @@
 		"iS": 12635,
 		"oA": 0,
 		"oAP": "\/images\/enemy-bug.png",
+		"oF": 0,
+		"oIPL": 0,
+		"opt": 0,
+		"oT": 1,
+		"q": 100
+		},
+	"\/images\/flying-0.png": {
+		"ft": 32768,
+		"iS": 18906,
+		"oA": 0,
+		"oAP": "\/images\/flying-0.png",
 		"oF": 0,
 		"oIPL": 0,
 		"opt": 0,
@@ -239,33 +248,11 @@
 		"oT": 1,
 		"q": 100
 		},
-	"\/images\/tu-1.png": {
-		"ft": 32768,
-		"iS": 8921,
-		"oA": 0,
-		"oAP": "\/images\/tu-1.png",
-		"oF": 0,
-		"oIPL": 0,
-		"opt": 0,
-		"oT": 1,
-		"q": 100
-		},
 	"\/images\/water-block.png": {
 		"ft": 32768,
 		"iS": 9210,
 		"oA": 0,
 		"oAP": "\/images\/water-block.png",
-		"oF": 0,
-		"oIPL": 0,
-		"opt": 0,
-		"oT": 1,
-		"q": 100
-		},
-	"\/images\/xiong-1.png": {
-		"ft": 32768,
-		"iS": 7838,
-		"oA": 0,
-		"oAP": "\/images\/xiong-1.png",
 		"oF": 0,
 		"oIPL": 0,
 		"opt": 0,
@@ -299,6 +286,46 @@
 		"sC": 3,
 		"tS": 0
 		},
+	"\/js\/base64-min.js": {
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 0,
+		"oAP": "\/js\/base64-min-min.js",
+		"oF": 0,
+		"sC": 3,
+		"tS": 0
+		},
+	"\/js\/base64.js": {
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 0,
+		"oAP": "\/js\/base64-min.js",
+		"oF": 0,
+		"sC": 3,
+		"tS": 0
+		},
+	"\/js\/data-min.js": {
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 0,
+		"oAP": "\/js\/data-min-min.js",
+		"oF": 0,
+		"sC": 3,
+		"tS": 0
+		},
+	"\/js\/data.js": {
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 0,
+		"oAP": "\/js\/data-min.js",
+		"oF": 0,
+		"sC": 3,
+		"tS": 0
+		},
 	"\/js\/engine-min.js": {
 		"ft": 64,
 		"ma": 0,
@@ -319,6 +346,26 @@
 		"sC": 3,
 		"tS": 0
 		},
+	"\/js\/Manager-min.js": {
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 0,
+		"oAP": "\/js\/Manager-min-min.js",
+		"oF": 0,
+		"sC": 3,
+		"tS": 0
+		},
+	"\/js\/Manager.js": {
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 0,
+		"oAP": "\/js\/Manager-min.js",
+		"oF": 0,
+		"sC": 3,
+		"tS": 0
+		},
 	"\/js\/resources.js": {
 		"ft": 64,
 		"ma": 0,
@@ -328,6 +375,13 @@
 		"oF": 0,
 		"sC": 3,
 		"tS": 0
+		},
+	"\/README.html": {
+		"cB": 0,
+		"ft": 8192,
+		"oA": 0,
+		"oAP": "\/README.html",
+		"oF": 0
 		},
 	"\/README.md": {
 		"cB": 0,
@@ -353,10 +407,10 @@
 "manualImportLinks": {
 	},
 "projectAttributes": {
-	"creationDate": 536081582,
-	"displayValue": "Arcade Game Clone_zh",
-	"displayValueWasSetByUser": 0,
-	"iconImageName": "meme-chloe"
+	"creationDate": 536229198,
+	"displayValue": "front-udacity-ArcadeGame",
+	"displayValueWasSetByUser": 1,
+	"iconImageName": "meme-drunkArcher"
 	},
 "projectSettings": {
 	"abortBuildOnError": 1,

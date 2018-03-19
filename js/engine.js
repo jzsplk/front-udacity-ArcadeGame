@@ -21,9 +21,20 @@ var Engine = (function(global) {
         ctx = canvas.getContext('2d'),
         lastTime;
 
+    /* 变量用来记录时间，用于控制游戏进程*/
+    var gamingTime;
+
+    /* 变量用来控制时间流逝速度，默认为1*/
+    var timeSpeed = 1;
+
     canvas.width = 505;
     canvas.height = 606;
     doc.body.appendChild(canvas);
+    //自定义大小
+
+
+    //控制canvas的位置
+    // canvas.style.marginTop = '-11px';
 
     /* 这个函数是整个游戏的主入口，负责适当的调用 update / render 函数 */
     function main() {
@@ -32,7 +43,7 @@ var Engine = (function(global) {
          * 就问你屌不屌！
          */
         var now = Date.now(),
-            dt = (now - lastTime) / 1000.0;
+            dt = (now - lastTime) / 1000.0 * timeSpeed;
 
         /* 调用我们的 update / render 函数， 传递事件间隙给 update 函数因为这样
          * 可以使动画更加顺畅。
@@ -42,6 +53,9 @@ var Engine = (function(global) {
 
         /* 设置我们的 lastTime 变量，它会被用来决定 main 函数下次被调用的事件。 */
         lastTime = now;
+
+        /* 累计时间，时间跟dt与流逝速度相关。 */
+        gamingTime += dt;
 
         /* 在浏览准备好调用重绘下一个帧的时候，用浏览器的 requestAnimationFrame 函数
          * 来调用这个函数
@@ -76,6 +90,10 @@ var Engine = (function(global) {
         allEnemies.forEach(function(enemy) {
             enemy.update(dt);
         });
+
+        allTreasures.forEach(function(treasure) {
+            treasure.update(dt);
+        });
         player.update();
     }
 
@@ -84,16 +102,52 @@ var Engine = (function(global) {
      * 怎么工作的，他们就像是那种每一页上都画着不同画儿的书，快速翻动的时候就会出现是
      * 动画的幻觉，但是实际上，他们只是不停的在重绘整个屏幕。
      */
-    function render() {
-        /* 这个数组保存着游戏关卡的特有的行对应的图片相对路径。 */
-        var rowImages = [
+
+     /* 保存游戏地图的数组*/
+     var maps = [
+                        [
                 'images/water-block.png',   // 这一行是河。
                 'images/stone-block.png',   // 第一行石头
                 'images/stone-block.png',   // 第二行石头
                 'images/stone-block.png',   // 第三行石头
-                'images/grass-block.png',   // 第一行草地
+                'images/stone-block.png',   // 第一行草地
                 'images/grass-block.png'    // 第二行草地
-            ],
+            ],[
+                'images/grass-block.png',   // 这一行是河。
+                'images/water-block.png',   // 第一行石头
+                'images/water-block.png',   // 第二行石头
+                'images/water-block.png',   // 第三行石头
+                'images/water-block.png',   // 第一行草地
+                'images/grass-block.png'    // 第二行草地
+                ],
+                [
+                'images/stone-block.png',   // 这一行是河。
+                'images/grass-block.png',   // 第一行石头
+                'images/grass-block.png',   // 第二行石头
+                'images/grass-block.png',   // 第三行石头
+                'images/grass-block.png',   // 第一行草地
+                'images/stone-block.png'    // 第二行草地
+                ]
+            ];
+
+    /* 改变地图的函数*/
+    var currentMap = maps[0];
+
+    function changeMap(num) {
+        // var randomIndex = Math.floor(Math.random() * 3);
+        // index += 1;
+        currentMap = maps[num];
+        // return;
+    }
+
+    
+
+
+    function render() {
+        /* 这个数组保存着游戏关卡的特有的行对应的图片相对路径。 */
+
+        
+        var rowImages = currentMap,
             numRows = 6,
             numCols = 5,
             row, col;
@@ -121,6 +175,14 @@ var Engine = (function(global) {
             enemy.render();
         });
 
+        allObstacles.forEach(function(ob) {
+            ob.render();
+        });
+        
+        allTreasures.forEach(function(ob) {
+            ob.render();
+        });
+
         player.render();
     }
 
@@ -130,6 +192,18 @@ var Engine = (function(global) {
      */
     function reset() {
         // 空操作
+        gamingTime = 0;
+        setTimeSpeed(1);
+    }
+
+    /* 自定义用来获取游戏时长的函数*/
+    function getGamingTime() {
+        return gamingTime;
+    }
+
+    /* 自定义用来设置游戏时间流逝速度的函数*/
+    function setTimeSpeed(speed) {
+        timeSpeed = speed;
     }
 
     /* 紧接着我们来加载我们知道的需要来绘制我们游戏关卡的图片。然后把 init 方法设置为回调函数。
@@ -141,11 +215,17 @@ var Engine = (function(global) {
         'images/grass-block.png',
         'images/enemy-bug.png',
         'images/char-boy.png',
-        'images/tu-1.png',
-        'images/char-horn-girl.png',
-        'images/xiong-1.png',
+        'images/Rock.png',
         'images/Key.png',
-        'images/1511.png'
+        'images/Selector.png',
+        'images/Heart.png',
+        'images/Gem Blue.png',
+        'images/Gem Green.png',
+        'images/Gem Orange.png',
+        'images/char-cat-girl.png',
+        'images/coin-sprite-animation.png',
+        'images/astronaut3.png',
+        'images/flying-0.png'
     ]);
     Resources.onReady(init);
 
@@ -153,4 +233,13 @@ var Engine = (function(global) {
      * 对象。从而开发者就可以在他们的app.js文件里面更容易的使用它。
      */
     global.ctx = ctx;
+
+    /* Engine 提供的API，设置时间流速， 获取游戏时间， 更改游戏地图*/
+    return {
+        reset: reset,
+        getGamingTime: getGamingTime,
+        setTimeSpeed: setTimeSpeed,
+        changeMap: changeMap,
+        win: win
+    };
 })(this);
